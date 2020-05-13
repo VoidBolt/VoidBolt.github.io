@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+    <style>
+    *,
+    ::after,
+    ::before{
+        box-sizing: border-box;
+    }
+    html{
+        height: 100%;
+    }
+    html, body{
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+
+        font-family: 'Century';
+        font-size: 18px;
+        line-height: 28px;
+        -webkit-font-smoothing: antialiased;
+        Color: rgb(23, 23, 24);
+        /*overflow-x: hidden;*/
+    }
+    body{
+        
+        display: grid;
+        min-height: 100%;
+
+    }
+
+    header{
+        grid-area: header;
+    }
+    main{
+        grid-area: main;
+        border: 1px solid black;
+        background-image: url("../assets/nier.jpg");
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+    article{
+        height: 90%;
+    }
+    nav{
+        grid-area: nav;
+    }
+    footer{
+        grid-area: footer;
+        background: rgba(255,255,255,0.2);
+    }
+    /*Header*/
+    header{
+        display: block;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+        /*padding-top: 4.25em; 
+        padding-bottom: 0.5em;*/
+        border-bottom: 1px solid #EAEDF0;
+    }
+    header>.page-header__wrapper{
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .heading__title{
+        font-family: 'Harman Retro';
+        font-weight: normal;
+
+        font-size: 2rem;
+        line-height: 1.5em;
+        text-align: center;
+        margin-bottom: 12px;
+
+        display: block;
+        margin-block-start: 0.67em;
+        margin-block-end: 0.67em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+    }
+    .heading__parenthesis-rule{
+        display: flex;
+    }
+    .heading__rule-before {
+        border-top: 1px solid #959BA0;
+        -webkit-box-flex: 1;
+        flex: 1;
+        position: relative;
+        margin-right: 12px;
+    }
+    .heading__parenthesis{
+        font-size: 1.25rem;
+        margin-bottom: 1em;
+        text-align: center;
+
+        font-family: 'Harman Simple';
+        font-weight: normal;
+    }
+    .heading__rule-after {
+        border-top: 1px solid #959BA0;
+        -webkit-box-flex: 1;
+        flex: 1;
+        position: relative;
+        margin-left: 12px;
+    }
+    .heading__subtitle {
+        font-family: 'Century';
+        font-style: italic;
+
+        font-size: 1em;
+        line-height: 1em;
+        text-align: center;
+    }
+    /*Navigation*/
+
+    nav>ul{
+        box-sizing: border-box;
+
+        height: 100%;
+        width: 100vw;
+
+        padding:0;
+        margin: 0;
+        list-style: none;
+
+        display: grid;
+        grid-template-columns: repeat(450px,1fr);
+    
+    }
+    nav>ul>li:first-of-type{
+        border-top: 1.0px solid black;
+    }
+    nav>ul>li{
+        text-align: center;
+        font-size: 1.25em;
+        margin: 0px;
+        padding: 0px;
+        
+        border: 1.0px solid black;
+        border-top: 0.5px solid black;
+        border-bottom: 0.5px solid black;
+    }
+    nav>ul>li:last-of-type{
+        border-bottom: 1.0px solid black;
+    }
+    nav>ul>li:hover{
+        background: #8bb6ab;
+    }
+
+    /* Media Query's */
+@media(min-width:0px) and (max-width:640px){
+    html, body{
+        font-size: 12px;
+    }
+    body{
+        grid-template-areas: "nav nav nav nav"
+        "main main main main"
+        "footer footer footer footer";
+        grid-template-rows: 12% 83% 5%;
+    }
+    main{
+        width:100%;
+        height:100%;
+    }
+    nav>ul{
+        display: block;
+    }
+    article{
+        line-height: 1em;
+        font-size: 0.95em;
+    }
+    nav{
+        font-size: 1em;
+    }
+    /*
+    article>p{
+        display: none;
+    }
+    */
+    article>.container{
+        width: 95%;
+        height: 90%;
+        
+        margin-right: 2.5%;
+        margin-top: 1.25%;
+    }
+}
+@media(min-width:640px) and (max-width: 1200px){
+    html, body{
+        font-size: 16px;
+    }
+
+    body{
+        grid-template-areas: "nav nav nav nav"
+        "main main main main"
+        "footer footer footer footer";
+        grid-template-rows: 6% 91% 3%;
+    }
+    article{
+        line-height: 1.25em;
+        font-size: 1em;
+    }
+    nav{
+        font-size: 1.05em;
+    }
+
+    nav>ul{
+        display: grid;
+        grid-template-columns: 2fr 2fr ;
+        grid-auto-rows: minmax(30px, auto);
+        justify-items: stretch;
+        align-items: stretch;
+    }
+}
+@media(min-width:1200px){
+    html, body{
+        font-size: 16px;
+    }
+
+    body{
+
+        grid-template-areas: "nav nav nav nav"
+        "header header header header"
+        "main main main main"
+        "footer footer footer footer";
+        grid-template-rows: 3% 5% 85% 5%;
+
+    }
+    article{
+        line-height: 1.5em;
+        font-size: 1.25em;
+    }
+    nav{
+        font-size: 0.85em;
+    }
+    nav>ul{
+        display: flex;
+        flex-flow: row nowrap;
+    }
+    nav>ul>li{
+        flex: auto;
+    }
+}
+
+code {
+  font-family: Consolas,"courier new";
+  color: crimson;
+  background-color: #f1f1f1;
+  padding: 2px;
+  font-size: 105%;
+}
+    </style>
+<head>
+
+</head>
+<body>
+    <nav>
+        <ul>
+            <!--
+            <li><a>Home</a></li>
+            <li><a>About us</a></li>
+            <li><a>Contact</a></li>
+            <li><a>Impressum</a></li>
+            -->
+        </ul>
+    </nav>
+    <main>
+        <article id="landing_article" class="active_article">
+            <h2>Medientechnologien.</h2>
+            <iframe style="width:100%;height:100%;" src="index.html"></iframe>
+        </article>
+    </main>
+    <footer>Marcel Pulletz 899355</footer>
+</body>
+</html>

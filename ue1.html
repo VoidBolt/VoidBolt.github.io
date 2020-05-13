@@ -1,0 +1,305 @@
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="format.css">
+<style type="text/css">
+                 a:link {font-family:Arial;        font-size:10pt;        text-decoration:none;}
+                a:visited {font-family:Arial; font-size:10pt; text-decoration:none;}
+                a:hover {color:#FF3333; text-decoration:none; font-weight:normal; font-size:10pt;}
+</style>
+</head>
+
+<body>
+
+<iframe src="oben.html" width="800" height="120" name="IFrame3" id="IFrame3" scrolling="no" frameborder="0">
+         <p>Ihr Browser kann leider keine eingebe5tteten Frames anzeigen:Sie k&ouml;nnen die eingebettete Seite &uuml;ber den
+         folgenden.</p>
+</iframe>
+
+<h2>&Uuml;bung 1</h2>
+<br><h3>Aufgabe 1 a.)</h3>
+<br><p>Musikaufnahme</p>
+<audio controls><source src="./ue1/musik_Marcel_Pulletz.wav" type="audio/wav"></audio>
+<br><p>Sprachaufnahme</p>
+<audio controls><source src="./ue1/sprache_Marcel_Pulletz.wav" type="audio/wav"></audio>
+
+<br><h3>Aufgabe 1 b.)</h3>
+<h5>1 b.)</h5>
+<p>     Laut dem Nyquist-Shannon-Theorem: <br>
+        Die Samplerate fₓ sollte mindestens doppelt so hoch sein wie die kritische Frequenz fᵨ, d.h. höchste 
+        aufzunehmende Frequenz, also fₓ > 2 × fᵨ.<br>
+
+        Anzunehmen ist, dass dadurch wie das Menschliche gehör funktioniert sprache im Bereich
+        250Hz - 2KHz sind die Lower Mids (Lower Harmonics)
+        2kHz-4KHz (High Mids)
+        wahrzunehmen ist.
+
+        Wohingegen Musik durch seine Tiefen und Höhen ein viel größeres Spektrum an Schwingungen enthält.
+        Dabei schließt sich nicht aus das Menschen ebenfalls Geräusche außerhalb des Sprachspektrums erzeugen
+        können aber im generellen bewegt sich Sprache im normalgebrauch auf einem kleineren Spektrum und erfordert
+        deshalb eine geringere samplingrate um rekonstruierbare Signale zu digitalisieren.
+
+        Daher benötigen wir beim abtasten eines sprachsignales mindestens eine Abtastrate von 8Khz (4Khz ist die
+        obere Grenze dessen was wir als eingabesignal im sprachraum erwarten; somit niedrigster Aufwand)
+
+        Zudem:
+
+        Die Audio Files haben verschiedene Abtastfrequenzen, da ein stereo Signal beim Abtasten alternierend 
+        Werte aus Channel1/Channel2 erhält und somit doppelt soviele abtastungen (observationen) benötigt um
+        ein Audio-File der selben länge und der selben Bit(-igkeit;6Bit, 16Bit, 32Bit) zu diskretisieren.
+</p>
+<h5>1 c.)</h5>
+<p>
+        Als referenz für die header beschreibung nutze ich die geschnittenen 5s clips im .wav format, da
+        meine initiale Musik-Datei nur im .mp3 Format existiert und wave_io nicht damit umgehen kann.
+
+        <ul>
+                <h5>Headerausgabe (Musik)</h5>
+                <li>Channels: 2</li>
+                <li>Frames: 264024</li>
+                <li>Sample Rate: 44100</li>
+                <li>Valid Bits: 16</li>
+                <li>Bytes per sample: 2</li>
+        </ul>
+        <ul>
+                <h5>Headerausgabe (Sprache)</h5>
+                <li>Channels: 2</li>
+                <li>Frames: 243873</li>
+                <li>Sample Rate: 44100</li>
+                <li>Valid Bits: 16</li>
+                <li>Bytes per sample: 2</li>
+        </ul>
+        Channels: Wie bereits oben erwähnt gibt die anzahl der channel die dimension der daten an. Wenn man
+        beispielsweise ein bild betrachtet so kann es dargestellt werden mit einem Channel (Helligkeit),
+        2 oder 3 Channel für RGB-Color-Mixing oder 4 Channel für die Tranzparenz. 
+        Genauso ist es hier bei der Audio Datei mit der Channel anzahl. Ein Audiosignal mit nur einem
+        Channel nennt man mono, mit 2 Channeln Stereo und mit 4 Channeln Dolby Surround zb.
+        
+</p>
+<h5>1 d.) Bitrate Sprach- und Musik-Datei</h5>
+<p>
+        44,100 samples per second × 16 bits per sample × 2 channels = 1411kbps
+</p>
+<br><h3>Aufgabe 2 - 2.1</h3>
+<h5>2. a) Ascii-Writer </h5>
+<code>
+        int fa_max = 0
+        Writer fileWriter = new FileWriter(path+"\\out.txt");<br>
+
+        for (int i=0; i &lt samples;i++) { <br>
+                &nbsp;short val = readWavFile.sound[i]; <br>
+                &nbsp;fileWriter.write(val+System.lineSeparator()); <br>
+                &nbsp;if (abs(val)>fa_max){ <br>
+                        &nbsp;&nbsp;        fa_max = abs(val); <br>
+                        &nbsp;}<br>
+        }
+</code>
+<br><p>Originale: sine_hi03.wav, sine_lo00.wav</p>
+<audio controls><source src="./ue1/sine_hi03.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_lo00.wav" type="audio/wav"></audio>
+<h5>2. a)</h5>
+<p><code>
+        int fa_max = 0;<br>
+        new_samples = new short[samples];<br>
+        String path = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\ue1";<br>
+        Writer fileWriter = new FileWriter(path+"\\out.txt");<br>
+
+        for (int i=0; i &lt samples;i++) {<br>
+                short val = readWavFile.sound[i];<br>
+                fileWriter.write(val+System.lineSeparator());<br>
+                if (abs(val)>fa_max){<br>
+                        fa_max = abs(val);<br>
+                }<br>
+        }<br>
+        fileWriter.close();<br>
+
+</code>
+Das höchste gemessene Frequenz der sine_hi03.wav file ist 15137, was bedeutet wir sollten mit signalen zwischen [-15137, 15137] rechnen und unsere Abtastrate muss mehr als doppelt so groß sein.
+</p>
+
+<h5>2. b)</h5>
+<p>
+<img style="width:50%;" src="./ue1/gram_settings.png">
+<img style="width:50%" src="./ue1/gram_measurement.png">
+Die GrundFrequenz der Schwingung scheint bei 6KHz zu liegen. Was bedeutet dass wir eine Abtastrate von mindestens 2*6KHz+1 benötigen.  
+</p>
+
+<h5>2. c)
+        <p>Aufgabe: Bei der zeitlichen Diskretisierung eines Analogsignals muss das sogenannte Abtasttheorem
+                eingehalten werden. Wie lautet es und wie lässt sich der Grenzfall, für den es gerade noch gilt,
+                illustrieren? Erstelle hierzu eine Zeichnung und erläutere.</h5>
+        Lsg.:<br>
+        Laut dem Nyquist-Shannon-Theorem: <br>
+        Die Samplerate fₓ sollte mindestens doppelt so hoch sein wie die kritische Frequenz fᵨ, d.h. höchste 
+        aufzunehmende Frequenz, also fₓ > 2 × fᵨ.<br>
+        Skizze:
+        <img src="ue1/skizze.jpg"/>
+</p>
+<h5>2 .d)</h5>
+<p>
+        Es wird ein low-pass filter auf das analoge signal angewendet und dann nach dem abtasttheorem<br>
+        fa > 2*fa_max eine ausreichende menge von observationen an dem signal vorgenommen um später in der<br>
+        lage zu sein das Signal zu rekonstruieren.
+</p>
+<h5>2. e)</h5>
+
+        Down-Sampling:<br>
+        <code>
+        int down_sample = 2;<br>
+        down_samples = new short[(int)(samples/down_sample)];<br>
+        // 2e Downsampling<br>
+        for (int i=0; i &lt samples;i+=down_sample) {<br>
+                //DownSampling indem wir jeden zweiten wert verwerfen und ein neues signal mit der hälte der gesampleten daten zu erhalten<br>
+                short val = readWavFile.sound[i];<br>
+                down_samples[i/down_sample] = val;<br>     
+        }<br>
+        [...]<br>
+        WavFile.write_wav(outFilename, numChannels, numFrames/down_sample, validBits, sampleRate/down_sample, down_samples);<br>
+
+        </code>
+        <audio controls><source src="./ue1/musik_downsample2.wav" type="audio/wav"></audio>
+<h5>2. f) </h5>
+<audio controls><source src="./ue1/sine_hi03_downsample2.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_hi03_downsample4.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_hi03_downsample6.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_hi03_downsample8.wav" type="audio/wav"></audio>
+<img src="./ue1/sine_downsample_waveform2468.png"/>
+<img src="./ue1/sine_downsample_spectorgram2468.png"/>
+
+<audio controls><source src="./ue1/sine_lo00_downsample2.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_lo00_downsample4.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_lo00_downsample6.wav" type="audio/wav"></audio>
+<audio controls><source src="./ue1/sine_lo00_downsample8.wav" type="audio/wav"></audio>
+<img src="./ue1/sinelo_downsample_waveform2468.png"/>
+<img src="./ue1/sinelo_downsample_spectorgram2468.png"/>
+        
+
+<h5>3 a.)</h5>
+<p>L&ouml;sung</p>
+<p>
+        Darstellbare Amplitudenwerte für 8-Bit Audio-Auflösung = #256 in der Reichweite von -128 bis 127<br>
+        Darstellbare Amplitudenwerte für 16-Bit Audio-Auflösung = #65536 in der reichweite -32768 bis 32767
+</p>
+
+
+<h5>3 b.)</h5>
+<p>
+Aufgabe: Modifiziere wave_io dahingehend, dass die Bitanzahl reduziert wird. Dazu werden alle Samples
+durch eine Potenz von 2 geteilt (Integer-Division ohne Rest). Damit das resultierende Signal nicht
+leiser wird als das Original, wird die Operation durch Multiplikation mit derselben 2er Potenz
+kompensiert. Zu beachten: Der Datentyp hat nach wie vor 16 bit!
+</p>
+<p>
+Lsg:
+<code>
+        
+// 3b Bitreduzierung
+short[] bit_reduced_samples;
+[...]
+int valid_range = (int)Math.pow(2.0, validBits);<br>
+int upper_bound = valid_range - (int)valid_range/2;<br>
+int lower_bound = -upper_bound;<br>
+System.out.println("lower/upper bound: "+ lower_bound+" "+upper_bound);<br>
+
+int reduced_bits = 8;<br>
+int max_freq = (int)Math.pow(2, validBits-reduced_bits)/2;<br>
+System.out.println("Max Freq: "+ max_freq);<br>
+bit_reduced_samples = new short[samples];<br>
+
+for (int i=0; i &lt samples;i++) {<br>
+        short val = readWavFile.sound[i];<br>
+        val /= Math.pow(2,reduced_bits);<br>
+        val *= reduced_bits;<br>
+        /*while (Math.abs(val) > max_freq){<br>
+                val /= 2;<br>
+        }*/<br>
+        bit_reduced_samples[i] = val;<br>
+
+[...]<br>
+WavFile.write_wav(outFilename, numChannels, numFrames, validBits, sampleRate, bit_reduced_samples);<br>
+}
+
+
+</code>
+</p>
+<p>
+
+</p>
+<h5>3 c.)</h5>
+<p>
+        Bei der Musikdatei die schwingungen im spektrum von 16 bit enthält macht sich der qualitätverlust recht schnell bemerkbar aber besonders auffällig besonders mit den resultierenden störsignalen wird es bei einer reduzierung
+        von 16Bit auf 8Bit. Die Reichweite des Menschlichen hörens ist bis 20KHz und Sprache nur im bereich von 4KHz, daher macht sich eine Bitreduzierung an einem Signal mit einem größeren Spektrum schneller bemerkbar.
+
+        Bei Audio Dateien mit Sprache ist die Reichweite generell geringer somit sollte die akzeptable bitereduzierung ebenfalls viel kleiner sein.
+
+        250Hz - 2KHz sind die Lower Mids (Lower Harmonics)
+        2kHz-4KHz sind die High Mids.
+        In diesem Bereich wird Sprache hörbar. Somit kann aus diesem Spektrum ein gewisses Minimum für 
+        Sprach-Audio Dateien abgeschätzt werden.
+        <h4>Original Music</h4>
+        <audio controls><source src="./ue1/musik_Marcel_Pulletz.wav" type="audio/wav"></audio>
+        <h4>8Bit reduced Music (nurnoch 8 bit audiospektrum)</h4>
+        <audio controls><source src="./ue1/musik_Marcel_Pulletz_reduced8bit.wav" type="audio/wav"></audio>
+        <img src="./ue1/music_original_8bitreduced.png"/>
+        OriginalDatei:16Bit -> 8 Bit
+
+        <h4>Original Sprachaufnahme</h4>
+        <audio controls><source src="./ue1/sprache_Marcel_Pulletz.wav" type="audio/wav"></audio>
+        <h4>8Bit reduced Music (nurnoch 8 bit audiospektrum)</h4>
+        <audio controls><source src="./ue1/sprache_Marcel_Pulletz_9bitreduced.wav" type="audio/wav"></audio>
+        <img src="./ue1/sprache_original_9bitreduced.png"/>
+        OriginalDatei: 16 Bit -> 5 Bit
+
+        <p>
+                Die Energie beider Bitreduzierten Dateien ist drastisch reduziert, was logisch ist wenn man bedenkt das ein größeres Spektrum mehr Energie bedeutet und wir mit unserer reduzierung alle höherfrequenzigen schwingungen 
+                resamplen auf eine Bandbreite (des Audiosignales) was weniger verschiedene frequenzen beschreiben kann.
+        </p>
+
+</p>
+<p>
+<h5>3 d.)</h5>
+// 3e Bitreduzierung Differenz<br>
+<code>
+bit_reduced_difference = new short[samples];<br>
+reduced_bits = 3;<br>
+for (int i=0; i &lt samples;i++) {<br>
+        short val = readWavFile.sound[i];<br>
+        short new_val = (short)(val / Math.pow(2,reduced_bits));<br>
+
+        short diff = (short)((val-new_val)* Math.pow(2,validBits-reduced_bits-1));<br>
+        bit_reduced_difference[i] = diff;<br>
+
+} <br>
+WavFile.write_wav(outFilename, numChannels, numFrames, validBits, sampleRate, bit_reduced_difference);<br>
+</code>       
+</p>
+
+<h5>3 e.)</h5>
+<p>Musik 1 Bit Quantisierungsfehler (VORSICHT LAUT)</p>
+<audio controls><source src="./ue1/musik_Marcel_Pulletz_quanterror1.wav" type="audio/wav"></audio>
+<p>Sprache 1 Bit Quantisierungsfehler (VORSICHT LAUT)</p>
+<audio controls><source src="./ue1/sprache_Marcel_Pulletz_quanterror1.wav" type="audio/wav"></audio>
+<img src="./ue1/quant_error1.png"/>
+<p>VORSICHT VORSICHT VORSICHT 8 Bit reduzierte Musikdatei, QuantisierungsFehler (differenz zum original)</p>
+<audio controls><source src="./ue1/musik_Marcel_Pulletz_quanterror8.wav" type="audio/wav"></audio>
+
+<h1>QuantisierungsFehler und Bitreduzierte Musikdatei (reduktion 8 bit)</h1>
+<img src="./ue1/quanterror_bitreduced_music.png"/>
+
+<p>VORSICHT VORSICHT VORSICHT 9 Bit reduzierte Sprachdatei, QuantisierungsFehler (differenz zum original)</p>
+<audio controls><source src="./ue1/sprache_Marcel_Pulletz_quanterror9.wav" type="audio/wav"></audio>
+
+<h1>Quantisierungsfehler und Bitreduzierte Sprachdatei (reduktion 9 bit)</h1>
+<img src="./ue1/quanterror_bitreduced_sprache.png"/>
+
+<h5>3 f.)</h5>
+<p>
+        Mein audiorauschen ist extrem Laut auch bei niedriger Bitreduzierung und führt bei Höheren reduktionen zu merkwürdigen artefakten an hochfrequenzigen bändern.
+</p>
+
+
+
+
+
+</body>
+</html>
