@@ -12,21 +12,22 @@
 <body>
 
 <iframe src="oben.html" width="800" height="120" name="IFrame3" id="IFrame3" scrolling="no" frameborder="0">
-         <p>Ihr Browser kann leider keine eingebe5tteten Frames anzeigen:Sie k&ouml;nnen die eingebettete Seite &uuml;ber den
+         <p>Ihr Browser kann leider keine eingebetteten Frames anzeigen:Sie k&ouml;nnen die eingebettete Seite &uuml;ber den
          folgenden.</p>
 </iframe>
 
 <h2>&Uuml;bung 2</h2>
-<br><h3>Aufgabe 1 - 1.1</h3>
+<br><h3>Aufgabe 1.</h3>
 <table><tr>
-<td><img src="./pics/Koala.jpg" alt="Koalabaer auf dem Baum" width="350" height="300"></td>
-<td><img src="./pics/Penguins.jpg" alt="Penguins auf dem Eis" width="350" height="300"></td>
+<td><img src="out/Ue2/1. aufgabe/" alt="manmade" width="350" height="300"></td>
+<td><img src="out/Ue2/1. aufgabe//nature_Marcel_Pulletz.bmp" alt="mature" width="350" height="300"></td>
 </tr></table>
-<p>Beschreibung</p>
-<p>L&ouml;sung</p>
 
-<br><h3>Aufgabe 1 - 1.2</h3>
-<p>L&ouml;sung</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10.bmp">
+
+<p>Die geschätzte Periode in x-Richtung: 32 Pixel.</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12.bmp">
+<p>Die geschätzte Periode in y-Richtung: 11 oder 22 Pixel.</p>
 
 <br><h3>Aufgabe 2 - 2.1</h3>
 <img src="./pics/stadt.png" alt="Marsch &uuml;ber die Stra&szlig;e" width="450" height="300">
@@ -39,8 +40,172 @@
 <br><h3>Aufgabe 2 - 2.3</h3>
 <p>L&ouml;sung</p>
 
+<br><h3>Aufgabe 2.4 Wie entsteht bei Bild und Videoaufnahmen Aliasing?</h3>
+<p>Bilder haben eine Resolution. So kann ein Bild 500x500 Pixel groß sein. Abhängig davon wieviele Pixel zur verfügung stehen können leichter Aliasing-probleme auftreten.
+    In Bildern macht sich aliasing durch einen Brückeneffekt bei den Pixeln bemerkbar. Also bei der Situation wo nicht genügend Pixel zur Verfügung stehen um der Steigung 
+    eines Farbverlaufes (beispielsweise einer Linie) zu folgen ohne dabei Pixel zu überspringen (in der höhe oder breite).  
+    So illustriert zum Beispiel der Bresenham Line Algorithm diese Verhaltensweise sehr gut mit dieser Grafik:
+</p>
+<img src="out/Ue2/2.3 Aliasing/Bresenham_line_algorithm_Aliasing.png">
+<p>
+    Die Konturen einer Linie liegen häufig auf subPixeln und müssen somit mit besseren Techniken abhängig vom Zentrum des jeweiligen Pixels betrachtet werden um,
+    entscheidungen für die Lösung potentieller Aliasing Probleme zu entwickeln.
+    Beispiele hierfür sind die Algorithmen:
+        -Gupta und Sproull
+        -Xiaolin Wu 
+    wobei diese verbesserungen des Bresenham Algorithmus sind.
+
+    Zudem wird eine äußerst teure Methode des Supersampling verwendet wobei beispielsweise eine Textur von 1000x1000 auf 4000*4000 oder größer gesampled wird und
+    somit mehr Pixel für die darstellung Aliasing-Freier Linien vorhanden sind. Dies jedoch ist natürlich nicht sehr skalierbar da die größere Textur auch
+    eine größere computation benötigt.
+
+    Wenn wir also jetzt unser Bild Downsamplen wird diese Brücke mit jedem DownSample schritt sichtbarer.
+</p>
+<p>
+    Beim Downsamplen wird es zu einem punkt kommen an denen der Moiré-Effekt entsteht, hierbei entsteht eine optischer Effekt bei dem
+    unterschiedlich frequenzige in rotierten oder bewegenden zustand zu linien führen, Im prinzip ist die Sample Rate nicht hoch genug für die generierten
+    details im Bild und deshalb entstehen schwarze bänder an frequenzähnlichen bereichen. 
+
+</p>
+<img src="out/Ue2/moiré-effekt/moiré_example.jpg">
+<img src="out/Ue2/moiré-effekt/moiré_example2.jpg">
+
+<h3>2-Fach Downsample</h3>
+<img src="out/Ue2/2.5 DownSample/nature_gray_downsample2_Marcel_Pulletz.bmp">
+<p>
+    So wird bereits bei einem Downsample von 2 die "Sawtooth"-Struktur erkennbar (besonders an den Kanten der Blätter) und wird bei größeren Downsamples äußerst destruktiv für die Bildqualität.
+</p>
+<h3>16-Fach Downsample</h3>
+<img src="out/Ue2/2.5 DownSample/nature_gray_downsample16_Marcel_Pulletz.bmp">
+<h3>32-Fach Downsample</h3>
+<img src="out/Ue2/2.5 DownSample/nature_gray_downsample32_Marcel_Pulletz.bmp">
+
+
+<br><h3>Aufgabe 2.5 Vertikales, Horizontales Downsampling mit gegebenen grating files:</h3>
+<img src="out/Ue2/2.5 DownSample/grating_H10.bmp">
+
+<p>Die geschätzte Periode in x-Richtung: 32 Pixel.</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12.bmp">
+<p>Die geschätzte Periode in y-Richtung: 11 oder 22 Pixel.</p>
+<p>
+Horizontales Downsampling macht nur Sinn mit dem linken Bild: das Downsampling betrachtet x als referenz wenn es entscheidet ob es den ungeraden Pixel mit dem geraden
+Pixel davor austauschen soll, würden wir also das Rechte Bild für diese Downsampling Methode wählen würden wir keine veränderung verursachen da wir nur gleichfarbige
+Pixel nach links schieben würden. 
+Daher entsteht bei rechten Bild im grunde kein neues Ergebnis (2Fach Horizontal Downsample):
+</p>
+<img src="out/Ue2//2.5 DownSample/grating_V12_horizontal_DS2_Marcel_Pulletz.bmp">
+<h4>Horizontales Downsampling</h4>
+<p>
+Hingegen mit dem Linken Bild entsteht so etwas (2Fach Horizontal Downsample):
+</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS2_Marcel_Pulletz.bmp">
+<p>(3Fach Horizontal Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS3_Marcel_Pulletz.bmp">
+<p>(4Fach Horizontal Downsample): (hier scheint der moiré-effekt am stärksten zu sein)</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS4_Marcel_Pulletz.bmp">
+
+<p>(5Fach Horizontal Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS5_Marcel_Pulletz.bmp">
+<p>(6Fach Horizontal Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS6_Marcel_Pulletz.bmp">
+<p>(7Fach Horizontal Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS7_Marcel_Pulletz.bmp">
+<p>(8Fach Horizontal Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_H10_horizontal_DS8_Marcel_Pulletz.bmp">
+Hierbei wird jeder ungerader Pixel mit dem Pixel davor ersetzt. Nun ersetzen wir soviele pixel mit dem davor bis wir das Moiré-Muster erkennen.
+
+
+<h4>Vertikales Downsampling</h4>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS2_Marcel_Pulletz.bmp">
+<p>(3Fach Vertikales Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS3_Marcel_Pulletz.bmp">
+<p>(4Fach Vertikales Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS4_Marcel_Pulletz.bmp">
+<p>(5Fach Vertikales Downsample): (hier scheint der moiré-effekt am stärksten zu sein)</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS5_Marcel_Pulletz.bmp">
+<p>(6Fach Vertikales Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS6_Marcel_Pulletz.bmp">
+<p>(7Fach Vertikales Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS7_Marcel_Pulletz.bmp">
+<p>(8Fach Vertikales Downsample):</p>
+<img src="out/Ue2/2.5 DownSample/grating_V12_vertikal_DS8_Marcel_Pulletz.bmp">
+
+
 <br><h3>Aufgabe 3 - 3.1</h3>
 <p>L&ouml;sung</p>
+<h3>OriginalFiles: </h3>
+<img src="out/Ue2/3. Bitreduzierung/manmade_Marcel_Pulletz.bmp">
+<img src="out/Ue2/3. Bitreduzierung/nature_Marcel_Pulletz.bmp">
+
+<p>Bei beiden Bildern ist bei einer Bitreduzierung bereits deutlich zu erkennen das die höheren spektren, also die besonders Hellen Farben
+    nicht mehr richtig dargestellt werden. Es sieht wie leere oder zumindest wie eine farbe aus einem fremden spektrum aus. 
+</p>
+
+<h4>Manmade Bitreduzierung</h4>
+
+<h5>1x Bitreduziert Manmade</h5>
+<img src="out/Ue2/3. Bitreduzierung/manmade_1bitreduced_Marcel_Pulletz.bmp">
+
+<h5>2x Bitreduziert Manmade</h5>
+<img src="out/Ue2/3. Bitreduzierung/manmade_2bitreduced_Marcel_Pulletz.bmp">
+
+<h5>4x Bitreduziert Manmade</h5>
+<img src="out/Ue2/3. Bitreduzierung/manmade_4bitreduced_Marcel_Pulletz.bmp">
+
+
+<h5>6x Bitreduziert Manmade</h5>
+<img src="out/Ue2/3. Bitreduzierung/manmade_6bitreduced_Marcel_Pulletz.bmp">
+<h5>7x Bitreduziert Manmade</h5>
+<img src="out/Ue2/3. Bitreduzierung/manmade_7bitreduced_Marcel_Pulletz.bmp">
+
+<h4>Nature Bitreduzierung</h4>
+
+<h5>1x Bitreduziert Nature</h5>
+<img src="out/Ue2/3. Bitreduzierung/nature_1bitreduced_Marcel_Pulletz.bmp">
+<h5>2x Bitreduziert Nature</h5>
+<img src="out/Ue2/3. Bitreduzierung/nature_2bitreduced_Marcel_Pulletz.bmp">
+<h5>4x Bitreduziert Nature</h5>
+<img src="out/Ue2/3. Bitreduzierung/nature_4bitreduced_Marcel_Pulletz.bmp">
+<h5>6x Bitreduziert Nature</h5>
+<img src="out/Ue2/3. Bitreduzierung/nature_6bitreduced_Marcel_Pulletz.bmp">
+<h5>7x Bitreduziert Nature</h5>
+<img src="out/Ue2/3. Bitreduzierung/nature_7bitreduced_Marcel_Pulletz.bmp">
+
+<p>Das visuelle erscheinungsbild der Bilder mit hohem bitreduzierungsgrad wird äußerst flourescent, also leuchtende farben. Als würde man Farben in eigentlich
+    nicht sichtbaren bereichen betrachten und sie nun mit den übrigen herkömmlichen farben darstellen.
+</p>
+
+<br><h3>Aufgabe 3.3 Differenzbilder</h3>
+<p>L&ouml;sung</p>
+
+<h5>1x Bitreduziert Differenzbild Manmade</h5>
+<img src="out/Ue2/3.3 Differenzbilder/manmade_1bitreduction_diff_img.bmp">
+<h5>2x Bitreduziert Differenzbild Manmade</h5>
+<img src="out/Ue2/3.3 Differenzbilder/manmade_2bitreduction_diff_img.bmp">
+
+<h5>4x Bitreduziert Differenzbild Manmade</h5>
+<img src="out/Ue2/3.3 Differenzbilder/manmade_4bitreduction_diff_img.bmp">
+<h5>6x Bitreduziert Differenzbild Manmade</h5>
+<img src="out/Ue2/3.3 Differenzbilder/manmade_6bitreduction_diff_img.bmp">
+
+
+<h5>1x Bitreduziert Differenzbild Nature</h5>
+<img src="out/Ue2/3.3 Differenzbilder/nature_1bitreduction_diff_img.bmp">
+<h5>2x Bitreduziert Differenzbild Nature</h5>
+<img src="out/Ue2/3.3 Differenzbilder/nature_2bitreduction_diff_img.bmp">
+
+<h5>4x Bitreduziert Differenzbild Nature</h5>
+<img src="out/Ue2/3.3 Differenzbilder/nature_4bitreduction_diff_img.bmp">
+<h5>6x Bitreduziert Differenzbild Nature</h5>
+<img src="out/Ue2/3.3 Differenzbilder/nature_6bitreduction_diff_img.bmp">
+
+
+
+
+
+
+
+
 
 </body>
 </html>

@@ -1,6 +1,9 @@
-public class Main {
+import bmp_io.bmp_io;
 
-    public static void main( String[] args ) {
+import java.io.IOException;
+
+public class Main {
+    public static void wave_io_test(){
         String ext = ".wav";
         String filename = "musik_Marcel_Pulletz";
         String filename2 = "sprache_Marcel_Pulletz";
@@ -28,5 +31,16 @@ public class Main {
         String input2 = folder+sinewave_lo+ext;
         String output2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\"+sinewave_lo+"_downsample3"+ext;
         wave_io.wave_io.main(new String[]{input2, output2});
+    }
+    public static void bmp_io_test() throws IOException {
+        String ext = ".bmp";
+
+        String file1 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\Uebung 2\\nature_Marcel_Pulletz.bmp"; //manmade_Marcel_Pulletz.bmp"; //grating_H10.bmp";
+        String outfile1 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\Uebung 2\\nature_1bitreduction_diff_img.bmp";
+        bmp_io.main(new String[]{file1, outfile1});
+
+    }
+    public static void main( String[] args ) throws IOException {
+        bmp_io_test();
     }
 }
