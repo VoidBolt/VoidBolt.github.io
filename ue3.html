@@ -194,19 +194,31 @@ ermittelt werden indem wir (freq_A+freq_B+deltaFreq)/2 errechnen.</h3>
 
 <img src="./out/Ue3/4 Klangnachbildung/Microwave Engine V0.1.png">
 
-
+<p>
 Hierbei benutze das Midi-CV Modul um per Tastendruck am V/OCT und den GATE inputs der Module die Aktivirung triggern.
 
 Für beide benutze ich eine SineWave aus einem VCO-1 Modul (jeweils: 80Hz, 4000hz) und zudem benutze ich noch 2 weitere LFO-1 (jeweils: 2Hz, 0.8Hz) um die Lautstärke im Mixer zu modulieren.
 
 Leite das GATE Signal des Midi-CV Moduls an das ADSR MODUL -> OUT des Moduls leiten an die EXP inputs eines VCA-2 Moduls welches unsere Signale beim erhalten des ADSR OUT weiterleiten an den
 Mixer an IN1 und IN2.ber den Mixer und seine Control Voltage Inputs moduliert.
+</p>
+<ul>
+    <h3>Einstellungen ADSR-Modul:</h3>
+
+    <li>Attack: 200ms</li>
+    <li>Decay: 100ms</li>
+    <li>Sustain: 100%</li>
+    <li>Release: 400ms</li>
+</ul>
+<p> 
+
 
 Das Hochfrequenzige 4000Hz signal wird ein 0.8Hz Signal über CV1 des Mixers moduliert.
 Das 80Hz Signal wird durch ein 2 Hz Signal über CV2 des Mixers moduliert.
 
 Zudem Sende ich es durch einen Low Pass Filter um die Störenden hochfrequenzsounds zu entfernen.
 VCF Freq: 261.6Hz
+</p>
 <audio controls><source src="./out/Ue3/4 Klangnachbildung/Microwave.wav" type="audio/wav"></audio>
 
 
