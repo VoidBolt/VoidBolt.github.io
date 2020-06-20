@@ -166,7 +166,7 @@ public final class bmp_io {
 			for (int x = 0; x < bmp.image.getWidth(); x++) {
 				PixelColor pixel = bmp.image.getRgbPixel(x,y);
 
-				int brightnessadjust = 1; //(int)Math.pow(2, reduced_bits);
+				int brightnessadjust = (int)Math.pow(2, reduced_bits);
 				int r = (pixel.r >> reduced_bits) * brightnessadjust;
 				int g = (pixel.g >> reduced_bits) * brightnessadjust;
 				int b = (pixel.b >> reduced_bits) * brightnessadjust;

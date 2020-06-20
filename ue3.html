@@ -6,6 +6,9 @@
                  a:link {font-family:Arial;        font-size:10pt;        text-decoration:none;}
                 a:visited {font-family:Arial; font-size:10pt; text-decoration:none;}
                 a:hover {color:#FF3333; text-decoration:none; font-weight:normal; font-size:10pt;}
+                img{
+                    max-width: 100%;
+                }
 </style>
 </head>
 
@@ -17,23 +20,177 @@
 </iframe>
 
 <h2>&Uuml;bung 3</h2>
-<br><h3>Aufgabe 1 - 1.1</h3>
-<video controls width="650" height="550">
-    <!--source src="./video/greenscreen.webm" type="video/mp4" /-->
-    <source src="./video/wildlife.webm" type="video/webm" />
-</video>
-<p>Beschreibung</p>
+<br><h3>Aufgabe 1 Einfache Schwingungsformen</h3>
 <p>L&ouml;sung</p>
 
-<br><h3>Aufgabe 1 - 1.2</h3>
+<p>
+    VCV Rack Patch:
+    <img src="">
+
+    <h3>SineWave:</h3>
+    <audio controls><source src="./out/Ue3/1 Einfache Schwingungsformen/SineWave.wav" type="audio/wav"></audio>
+    <h3>TriangleWave:</h3>
+    <audio controls><source src="./out/Ue3/1 Einfache Schwingungsformen/TriangleWave.wav" type="audio/wav"></audio>
+    <h3>SawWave:</h3>
+    <audio controls><source src="./out/Ue3/1 Einfache Schwingungsformen/Sawtooth.wav" type="audio/wav"></audio>
+    <h3>SquareWave:</h3>
+    <audio controls><source src="./out/Ue3/1 Einfache Schwingungsformen/SquareWave.wav" type="audio/wav"></audio>
+</p>
+
+
+<br><h3>Aufgabe 2 Spektrum Pulse Modulationen</h3>
+<p> Modulation mit Pulse Width
+    Spektrum der jeweiligen Sounds zur Observation der änderung der Obertöne
+
+    All tests with default Frequency 261.63Hz
+
+    Nur die Modulation wurde vorgenommen. Und die Obertöne in Praat 
+    visualisiert.
+
+    SineWave 50/50
+
+    SineWave 30/70
+
+    SineWave 10/90
+
+    TriangleWave 50/50
+
+    TriangleWave 30/70
+
+    TriangleWave 10/90
+
+    SawWave 50/50
+
+    SawWave 30/70
+
+    SawWave 10/90
+</p>
+<p>
+
+    <h3>SquareWave 50/50</h3>
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave50_50_far.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave50_50_closer.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave50_50_closest.png">
+
+    <h3>SquareWave 30/70</h3>
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave30_70_far.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave30_70_closer.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave30_70_closest.png">
+    
+    <h3>SquareWave 10/90</h3>
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave10_90_far.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave10_90_closer.png">
+    <img src="./out/Ue3/2 Pulse Modulation/SquareWave/SquareWave10_90_closest.png">
+
+<br><h3>Aufgabe 3 Schwebung:</h3>
+
+<img src="./out/Ue3/3 Schwebungen/Aufgabe 3 Patch Mixer.png">
+
+<p>
+<h3>Gegeben</h3>
+<ul>
+<li>freq_A = 261.64Hz</li>
+<li>freq_B = 261.64Hz + [5, 10, 15, 40, 160]Hz</li>
+</ul>
+Wenn beide Frequenzen gleich sind, verstärken sich die signale und werden doppelt so Laut,
+Die Amplituden addieren sich auch interferenz genannt.
+Nach dem selben Prinzip gibt es auch eine destruktive interferenz hierbei löschen
+sich die Signale gegenseitig aus an stellen wo die positive amplitude eine 
+equivalente jedoch negierte signalamplitude besitzt. (Channel1, Channel2)
+
+Nimmt man jetzt ein equivalentes signal und spielt es so verzögert ab, dass nun
+alle "Wellentäler" auf "Wellenberge" treffen, löscht sich das Signal durch
+destruktiv interferenz auf.
+
+Schwebung ist ein Verhalten bei dem Signale mit selber amplitude, jedoch
+mit kleinem frequenzunterschied (siehe gegeben oben []), eine periodische 
+Lautstärkeveränderung hervorrufen.
+
+<h3>Hierbei kann die Mittenfrequenz, Schwebungsfrequenz oder Differenzfrequenz (alles das selbe) 
+ermittelt werden indem wir (freq_A+freq_B+deltaFreq)/2 errechnen.</h3>
+<h4>Somit: fmittel = (freq_A+freq_B+deltaFreq)/2</h4>
+<h3>Und die Periodendauer kann ermittelt werden mit 1/fmittel</h3>
+<h4>Somit: Ts = 1/deltaFreq</h4>
+
+</p>
+
+<p>L&ouml;sung>
+
+    <h3>Schwebung 5Hz unterschied:</h3>
+    <h2>fmittel = (261.64Hz+261.64Hz+5Hz)/2 = 264.14Hz</h2>
+    <h2>Ts = 1/160Hz = 0.2 sekunden</h2>
+
+    <audio controls><source src="./out/Ue3/3 Schwebungen/Schwebung5Hz.wav" type="audio/wav"></audio>
+    
+    
+    <h3>Schwebung 10Hz unterschied:</h3>
+    <h2>fmittel = (261.64Hz+261.64Hz+10Hz)/2 = 266.64Hz</h2>
+    <h2>Ts = 1/10Hz = 0.1 sekunden</h2>
+
+    <audio controls><source src="./out/Ue3/3 Schwebungen/Schwebung10Hz.wav" type="audio/wav"></audio>
+    <h3>Schwebung 15Hz unterschied:</h3>
+    <h2>fmittel = (261.64Hz+261.64Hz+15Hz)/2 = 269.14Hz</h2>
+    <h2>Ts = 1/15Hz = 0.66666667 sekunden</h2>
+
+    <audio controls><source src="./out/Ue3/3 Schwebungen/Schwebung15Hz.wav" type="audio/wav"></audio>
+    <h3>Schwebung 40Hz unterschied:</h3>
+    <h2>fmittel = (261.64Hz+261.64Hz+50Hz)/2 = 281.64Hz</h2>
+    <h2>Ts = 1/40Hz = 0.025 sekunden</h2>
+
+
+    <audio controls><source src="./out/Ue3/3 Schwebungen/Schwebung40Hz.wav" type="audio/wav"></audio>
+    <h3>Schwebung 160Hz unterschied:</h3>
+    <h2>fmittel = (261.64Hz+261.64Hz+160Hz)/2 = 341.64Hz</h2>
+    <h2>Ts = 1/160Hz = 0.00625 sekunden</h2>
+
+    <audio controls><source src="./out/Ue3/3 Schwebungen/Schwebung160Hz.wav" type="audio/wav"></audio>
+
+
+</p>
+<br><h3>Aufgabe 3 Schwebung: (Fall A)</h3>
+
+
+<p>Es werden also wieder 2 Signale genommen mit der selben amplitude,
+    diesmal jedoch muss eine großer frequenunterschied existieren damit
+    tatsächlich eine erfolgreiche Amplitudenmodulation geschieht.
+</p>
+
+
+<p>
+<h3>Gegeben</h3>
+<ul>
+<li>freq_A = 50Hz</li>
+<li>freq_B = 800Hz</li>
+</ul>
+<h2>Zur Amplitudenmodulation:</h2>
+
+<p>
+    Bei der Amplitudenmodulation wird ein niedrigfrequenziges Signal in ein
+    hochfrequenzsignal umgewandelt, somit können niedrigfrequenzige Signale
+    mit hohen frequenzsignalen übertragen werden.
+    Hier die konstruktion eines solchen Signales:
+</p>
+
+<img src="./out/Ue3/4 Klangnachbildung/SinusWellenStereo.png">
+
+<p>Dieses Signal muss noch zusammengefasst werden damit es Mono ist.</p>
+
+<audio controls><source src="./out/Ue3/3 Schwebungen/amp_modulation50_800.wav"></audio>
+
+<img src="./out/Ue3/3 Schwebungen/amp_modulation_50_800.png">
+<img src="./out/Ue3/3 Schwebungen/amp_modulation_50_800_closer.png">
+<img src="./out/Ue3/3 Schwebungen/amp_modulation_50_800_closest.png">
+
+<p>Wie man hier sieht ist nun eine hochfrequenziges Signal entstanden, welches
+    unser niedrigfrequenziges Signal trägt.
+</p>
+
+<br><h3>Aufgabe 4</h3>
 <p>L&ouml;sung</p>
 
-<br><h3>Aufgabe 2 - 2.1</h3>
-<p>L&ouml;sung</p>
+<p>Ich war nicht sonderlich kreativ aber hier ist mein VCV Rack Patch:</p>
 
-<br><h3>Aufgabe 2 - 2.2</h3>
-<p>L&ouml;sung</p>
-
+<img src="./out/Ue3/4 Klangnachbildung/Alien Engine V0.1.png">
 
 </body>
 </html>
