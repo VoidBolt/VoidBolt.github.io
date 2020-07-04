@@ -53,7 +53,7 @@ public final class bmp_io {
 		for(int y = 0; y < bmp.image.getHeight(); y++) {
 			for (int x = 0; x < bmp.image.getWidth(); x++) {
 				PixelColor pixel = bmp.image.getRgbPixel(x, y);
-				double brightness_of_pixel = perceived_brightness(pixel);//(pixel.r+pixel.g+pixel.b)/3.0; //naive...
+				double brightness_of_pixel = (pixel.r+pixel.g+pixel.b)/3.0; //naive... perceived_brightness(pixel);//
 				histogramm[(int)brightness_of_pixel]++;
 			}
 		}

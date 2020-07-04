@@ -271,6 +271,7 @@
 
 <br><h3>Aufgabe 2 Brightness Histogramm</h3>
 Helligkeitshäufigkeiten zur Textdatei schreibe, Source Code:
+
 <code>
     public static void save_histo_data(int[] data, String destination) throws IOException{
 		FileWriter writer = new FileWriter(	destination);
@@ -319,7 +320,7 @@ Helligkeitshäufigkeiten zur Textdatei schreibe, Source Code:
 		for(int y = 0; y < bmp.image.getHeight(); y++) {
 			for (int x = 0; x < bmp.image.getWidth(); x++) {
 				PixelColor pixel = bmp.image.getRgbPixel(x, y);
-				double brightness_of_pixel = perceived_brightness(pixel);//(pixel.r+pixel.g+pixel.b)/3.0; //naive...
+				double brightness_of_pixel =(pixel.r+pixel.g+pixel.b)/3.0; //naive... perceived_brightness(pixel);//
 				histogramm[(int)brightness_of_pixel]++;
 			}
 		}
