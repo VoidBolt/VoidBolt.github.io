@@ -82,10 +82,14 @@
 
     Helligkeit ist ein Attribut bei dem eine Oberfläche mehr oder wenig licht vorhanden ist.
     Die Fähigkeit des Gehirns Helligkeit wahrzunehmen ist unmöglich definierbar, deswegen definiert das CIE (Commission Internationale de L'Éclairage)
-    eine weitere Größe der Luminance(=Y), welche definiert ist durch radialkraft gewichtet bei Spektralsensibilität. Das Auge ist sehr sensibel zu Grün, etwas weniger sensibel zu Rot und sehr unsensibel gegenüber Blau.
-    Deshalb ist das RGB-Farbspektrum irreführend und führt zur Falschen annahme dass (r+g+b)==Helligkeit, was jedoch nicht der Fall ist da die Sensibilität des Auges nicht in Betracht gezogen wird. Hingegen ist Y also die
-    Luminance eine direkt verlinkte variable, die über einen "Standart Observer" eine wellenlänge von 555nm annimmt und damit eine gewichtete Funktion ausführt welche uns Luminance liefert (*siehe oben).
-    Zudem ist das menschliche Auge äußerst empfindlich zu veränderungen des genannten Y, was es besonders nützlich macht wenn man einen Farbraum besitzt der Luminance als einzelne Variable verwendet.
+    eine weitere Größe der Luminance(=Y), welche definiert ist durch radialkraft gewichtet bei Spektralsensibilität. Das Auge ist sehr sensibel zu Grün, 
+    etwas weniger sensibel zu Rot und sehr unsensibel gegenüber Blau.
+    Deshalb ist das RGB-Farbspektrum irreführend und führt zur Falschen annahme dass (r+g+b)==Helligkeit, was jedoch nicht der Fall ist da die Sensibilität des 
+    Auges nicht in Betracht gezogen wird. Hingegen ist Y also die
+    Luminance eine direkt verlinkte variable, die über einen "Standart Observer" eine wellenlänge von 555nm annimmt und damit eine gewichtete Funktion ausführt 
+    welche uns Luminance liefert (*siehe oben).
+    Zudem ist das menschliche Auge äußerst empfindlich zu veränderungen des genannten Y, was es besonders nützlich macht wenn man einen Farbraum besitzt 
+    der Luminance als einzelne Variable verwendet.
     Cb und Cr werden als Chroma bezeichnet sie beschreiben Farbe indem sie die Präsenz und Absenz von Blau beschreiben (Cb) bzw von Rot(Cr).
     YCbCr wird normalerweise in digitalen Videos, jpeg, jpeg 20000 und mpeg verwendet.
 
@@ -481,9 +485,17 @@ Histogramme:
     <img src="./out/Ue4/1/manmade_HistogrammKontrast_10.0.bmp">
 
     Vergleiche mit Histogrammen mit Helligkeitsänderung aus b):
-    Bei der Kontraständerung können Helligkeitswerte verloren gehen die bei KontrastOperationen außerhalb der Reichweite [0-255] lagen und somit trunkiert wurden.
+    Bei der Kontraständerung können Helligkeitswerte verloren gehen die bei KontrastOperationen außerhalb der Reichweite [0-255]
+    lagen und somit trunkiert wurden.
 
     Vergleich mit Histogramm aus Aufgabe 2:
+    Die Resultierenden Bilder haben im Bezug auf das Histogramm eindeutige ähnlichkeiten, jedoch sind die durch Kontrast angepassten Bilder viel ärmer an Farbtönen 
+    und da die Kontrast
+    operation im Grunde das Spektrum außeinanderzieht oder zusammendrückt verliert es viel an Helligkeitsinformationen die beim trunkieren, also in Reichweite 
+    von [0-255] bringen, den Effekt das Spektrum als ganzes zu verkleinern.
+    Das Histogramm aus Aufgabe 2, also aus den Monochromatischen Grundbildern hat noch viel mehr verschiedene Grautöne, jedoch bei nature Bild sieht man zum Beispiel 
+    den hohen anteil an Helligkeit in beiden Versionen noch sehr gut. Wobei die Kontrast version um einiges mehr Pixel an diesem Datenpunkt enthalten wird wenn die 
+    starke Kontrasterhöhung verwendet wurde.
 
 </p>
 </body>
