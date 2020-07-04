@@ -378,6 +378,25 @@ Erstellt mit bmp.io, code oben, range[0-255] Helligkeiten und dessen aufkommen a
 
 <h4>b) Manipulation der Helligkeit durch add/sub der Werte h=[20, 40, 60, 80]; im 8-Bit Bereich bleiben (nicht größer als 2^8 -> clamp). Zudem Histogramm des hellsten und des dunkelsten Bildes</h4>
 Source Code unter annahme das h einer der in b) gennanten Werte ist.
+<code>
+    public static PixelColor change_brightness(PixelColor p, int h){
+		int r = Math.max(0, Math.min(255, p.r+h));
+		int g = Math.max(0, Math.min(255, p.g+h));
+		int b = Math.max(0, Math.min(255, p.b+h));
+		return new PixelColor(r, g, b);
+	}
+
+	public static BmpImage change_brightness(BmpImage bmp, int h){
+		for(int y = 0; y < bmp.image.getHeight(); y++) {
+			for (int x = 0; x < bmp.image.getWidth(); x++) {
+				PixelColor pixel = bmp.image.getRgbPixel(x, y);
+
+				bmp.image.setRgbPixel(x, y, change_brightness(pixel, h));
+			}
+		}
+		return bmp;
+	} 
+</code>
 Nature:
 [Oben links -80 Helligkeit -> +20]
 [links 20 Helligkeit -> +80]
