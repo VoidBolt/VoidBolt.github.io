@@ -551,6 +551,13 @@ public final class bmp_io {
 
 		}
 
+		double k=-1;
+		lumi = open_bmp(lumin_save);
+		change_contrast(lumi, k);
+		save = args[1].split("\\.")[0];
+		save+="_negativeKontrast_"+k;
+		save+='.'+args[1].split("\\.")[1];
+		save_bmp(lumi, save);
 
 		/*
 
