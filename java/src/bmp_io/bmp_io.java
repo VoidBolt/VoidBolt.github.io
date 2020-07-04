@@ -105,9 +105,10 @@ public final class bmp_io {
 		double Cb = p.g;
 		double Cr = p.b;
 
-		int r = (int) (1.403 * (Cr - 128) + Y);
+		//jpeg conversion https://en.wikipedia.org/wiki/YCbCr#ITU-R_BT.709_conversion
+		int r = (int) (1.402 * (Cr - 128) + Y);
 		int g = (int) ((-0.344 * (Cb - 128))+(-0.714 *(Cr-128)) + Y);
-		int b = (int) ( 1.773*(Cb-128) + Y);
+		int b = (int) ( 1.772*(Cb-128) + Y);
 
 		r = Math.max(0, Math.min(255, r));
 		g = Math.max(0, Math.min(255, g));

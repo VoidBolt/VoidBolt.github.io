@@ -63,9 +63,9 @@
             double Cb = p.g;
             double Cr = p.b;
     
-            int r = (int) (Y + 1.403*(Cr - 128));
+            int r = (int) (Y + 1.402*(Cr - 128));
             int g = (int) (Y -0.344*(Cb-128) - 0.714*(Cr-128));
-            int b = (int) (Y + 1.773*(Cb-128));
+            int b = (int) (Y + 1.772*(Cb-128));
     
             r = Math.max(0, Math.min(255, r));
             g = Math.max(0, Math.min(255, g));
