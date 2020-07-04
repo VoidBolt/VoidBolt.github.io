@@ -35,9 +35,16 @@ public class Main {
     public static void bmp_io_test() throws IOException {
         String ext = ".bmp";
 
-        String file1 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\Uebung 2\\nature_Marcel_Pulletz.bmp"; //manmade_Marcel_Pulletz.bmp"; //grating_H10.bmp";
-        String outfile1 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\Uebung 2\\nature_1bitreduction_diff_img.bmp";
-        bmp_io.main(new String[]{file1, outfile1});
+        String infile = "manmade_Marcel_Pulletz.bmp";
+        String outfile = "manmade.bmp";
+        String file1 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\"+infile; //manmade_Marcel_Pulletz.bmp"; //grating_H10.bmp";
+        String outfile_full = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\"+outfile;
+        bmp_io.main(new String[]{file1, outfile_full});
+        String infile2 = "nature_Marcel_Pulletz.bmp";
+        String outfile2 = "nature.bmp";
+        String file2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\"+infile2; //manmade_Marcel_Pulletz.bmp"; //grating_H10.bmp";
+        String outfile_full2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\"+outfile2;
+        bmp_io.main(new String[]{file2, outfile_full2});
 
     }
     public static void main( String[] args ) throws IOException {
