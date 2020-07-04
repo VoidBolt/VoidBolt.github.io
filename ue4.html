@@ -15,6 +15,24 @@
                     display: block;
                     padding: 20px;
                 }
+                html,body{
+                    width:100%;
+                }
+                pre:first{
+                    width:100%;
+                }
+                p, h4{
+                    overflow:auto;
+                    width:100%;
+                }
+
+                .gallery{
+                    display: flex;
+                    flex-flow: row wrap;
+                }
+                .gallery img{
+                    width:25%;
+                }
 </style>
 </head>
 
@@ -58,6 +76,7 @@
     </code>
 
 </p>
+
 <h4>a)</h4>
 <p>
 
@@ -71,6 +90,7 @@
     YCbCr wird normalerweise in digitalen Videos, jpeg, jpeg 20000 und mpeg verwendet.
 
 </p>
+
 <h4>b) RGB Seperate Channel Bilder</h4>
 <p>
     Source code:
@@ -121,6 +141,7 @@
     <img src="./out/Ue4/1/manmade_only_blue.bmp">
 
 </p>
+
 <h4>c) Y,Cb,Cr Seperate Channel Bilder</h4>
 <p>
     Source code:
@@ -247,6 +268,14 @@
 <br><h3>Aufgabe 2 Brightness Histogramm</h3>
 Helligkeitshäufigkeiten zur Textdatei schreibe, Source Code:
 <code>
+    public static void save_histo_data(int[] data, String destination) throws IOException{
+		FileWriter writer = new FileWriter(	destination);
+		for (int d : data){
+			writer.write(data+"\r\n");
+		}
+		writer.close();
+		System.out.println("Saved Histogramm data [line by line].");
+	}
 	public static double remap(double i, double lb, double ub, double frm, double to){
 		return (i - lb) / (ub - lb) *  (to - frm) + frm;
 
@@ -297,22 +326,89 @@ Erstellt mit bmp.io, code oben, range[0-255] Helligkeiten und dessen aufkommen a
 <img src="./out/Ue4/1/nature_Histogramm.bmp">
 <img src="./out/Ue4/1/manmade_Histogramm.bmp">
 
+
 <br><h3>Aufgabe 3 Brightness and Contrast</h3>
 <h4>a) Mittlere Helligkeit des Monochromen Detailbildes aus Aufgabe 1c.) Y-Only Bildes. Berechne auch den Kontast des Bildes.</h4>
-
 <p>
     Source Code:
     <code>
-        hi
+        public static double perceived_brightness(PixelColor pixel){
+            return (0.2 * pixel.r) + (0.72 * pixel.g) + (0.07 * pixel.b);
+        }
+        public static double brightness(PixelColor p){
+            return (p.r+p.g+p.b)/3.0;
+        }
+        public static int MittlereHelligkeit(BmpImage bmp){
+            double total = 0;
+            for(int y = 0; y < bmp.image.getHeight(); y++) {
+                for (int x = 0; x < bmp.image.getWidth(); x++) {
+                    PixelColor pixel = bmp.image.getRgbPixel(x, y);
+                    total += brightness(pixel);
+                }
+            }
+            return (int)(total/(bmp.image.getWidth()*bmp.image.getHeight()));
+        }
+        public static int Kontrast(BmpImage bmp){
+            int mittlereHelligkeit = MittlereHelligkeit(bmp);
+            double total = 0;
+            for(int y = 0; y < bmp.image.getHeight(); y++) {
+                for (int x = 0; x < bmp.image.getWidth(); x++) {
+                    PixelColor pixel = bmp.image.getRgbPixel(x, y);
+                    total += Math.pow(brightness(pixel)-mittlereHelligkeit,2);
+                }
+            }
+            return (int)Math.sqrt(total/(bmp.image.getWidth()*bmp.image.getHeight()));
+        }
     </code>
-    Mittlere Helligkeit = 
+    <img src="./out/Ue4/1/nature_luminance_all_channels.bmp">
+    Nature:
+    Mittlere Helligkeit = 140
+    Kontrast = 77
 
-    Kontrast = 
+    <img src="./out/Ue4/1/manmade_luminance_all_channels.bmp">
+    Manmade:
+    Mittlere Helligkeit: 107
+    Kontrast: 49
+    
 </p>
 
 <h4>b) Manipulation der Helligkeit durch add/sub der Werte h=[20, 40, 60, 80]; im 8-Bit Bereich bleiben (nicht größer als 2^8 -> clamp). Zudem Histogramm des hellsten und des dunkelsten Bildes</h4>
 Source Code unter annahme das h einer der in b) gennanten Werte ist.
-<img src="./out/Ue4/3/...">
+Nature:
+[Oben links -80 Helligkeit -> +20]
+[links 20 Helligkeit -> +80]
+<div class="gallery">
+<img src="./out/Ue4/1/nature_Brightness_-80.bmp">
+<img src="./out/Ue4/1/nature_Brightness_-60.bmp">
+<img src="./out/Ue4/1/nature_Brightness_-40.bmp">
+<img src="./out/Ue4/1/nature_Brightness_-20.bmp">
+
+<img src="./out/Ue4/1/nature_Brightness_20.bmp">
+<img src="./out/Ue4/1/nature_Brightness_40.bmp">
+<img src="./out/Ue4/1/nature_Brightness_60.bmp">
+<img src="./out/Ue4/1/nature_Brightness_80.bmp">
+
+</div>
+Histogramme:
+<img src="./out/Ue4/1/nature_HistogrammBrightness_-80.bmp">
+<img src="./out/Ue4/1/nature_HistogrammBrightness_80.bmp">
+Manmade:
+[Oben links -80 Helligkeit -> +20]
+[links 20 Helligkeit -> +80]
+<div class="gallery">
+<img src="./out/Ue4/1/manmade_Brightness_-80.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_-60.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_-40.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_-20.bmp">
+
+<img src="./out/Ue4/1/manmade_Brightness_20.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_40.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_60.bmp">
+<img src="./out/Ue4/1/manmade_Brightness_80.bmp">
+</div>
+Histogramme:
+<img src="./out/Ue4/1/manmade_HistogrammBrightness_-80.bmp">
+<img src="./out/Ue4/1/manmade_HistogrammBrightness_80.bmp">>
 <img src="./out/Ue4/3/...">
 
 <h4>c) Erhöhe bzw. verringere den Kontrast durch Muliplikation mit den Faktoren k=(0.2, 0.4, 0.8, 1.0) und k=(1.5, 2.5, 5.0, 10.0). Was passiert bei Kontraständerung k &lt; 0?</h4>

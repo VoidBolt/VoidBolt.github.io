@@ -5,6 +5,15 @@ import java.io.*;
 import java.util.HashMap;
 
 public final class bmp_io {
+
+	public static void save_histo_data(int[] data) throws IOException{
+		FileWriter writer = new FileWriter(	"C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\histo_data.txt");
+		for (int d : data){
+			writer.write(data+"\r\n");
+		}
+		writer.close();
+		System.out.println("Saved Histogramm data [line by line].");
+	}
 	public static double remap(double i, double lb, double ub, double frm, double to){
 		return (i - lb) / (ub - lb) *  (to - frm) + frm;
 
@@ -50,7 +59,6 @@ public final class bmp_io {
 		}
 		return histogramm;
 	}
-
 
 	public static BmpImage red_channel_only(BmpImage bmp){
 
@@ -177,6 +185,9 @@ public final class bmp_io {
 	public static double perceived_brightness(PixelColor pixel){
 		return (0.2 * pixel.r) + (0.72 * pixel.g) + (0.07 * pixel.b);
 	}
+	public static double brightness(PixelColor p){
+		return (p.r+p.g+p.b)/3.0;
+	}
 	public static PixelColor change_contrast(PixelColor p, int k){
 
 		int r = Math.max(0, Math.min(255, k*(p.r-128)+128));
@@ -234,6 +245,29 @@ public final class bmp_io {
 		}
 		return img;
 	}
+
+	public static int Kontrast(BmpImage bmp){
+		int mittlereHelligkeit = MittlereHelligkeit(bmp);
+		double total = 0;
+		for(int y = 0; y < bmp.image.getHeight(); y++) {
+			for (int x = 0; x < bmp.image.getWidth(); x++) {
+				PixelColor pixel = bmp.image.getRgbPixel(x, y);
+				total += Math.pow(brightness(pixel)-mittlereHelligkeit,2);
+			}
+		}
+		return (int)Math.sqrt(total/(bmp.image.getWidth()*bmp.image.getHeight()));
+	}
+	public static int MittlereHelligkeit(BmpImage bmp){
+		double total = 0;
+		for(int y = 0; y < bmp.image.getHeight(); y++) {
+			for (int x = 0; x < bmp.image.getWidth(); x++) {
+				PixelColor pixel = bmp.image.getRgbPixel(x, y);
+				total += brightness(pixel);
+			}
+		}
+		return (int)(total/(bmp.image.getWidth()*bmp.image.getHeight()));
+	}
+
 	public static BmpImage difference_img(BmpImage bmp, int reduced_bits){
 		BmpImage diff = new BmpImage();
 		int maxVal = 255; //something is wrong in the bit reduction and the difference image
@@ -390,27 +424,6 @@ public final class bmp_io {
 
 		//bmp = convert_YCbCR_to_RGB(bmp);
 
-		//reset bmp
-		bmp = open_bmp(args[0]);
-
-		bmp = lumin(bmp);
-		save = args[1].split("\\.")[0];
-		save+="_luminance_all_channels";
-		save+='.'+args[1].split("\\.")[1];
-		save_bmp(bmp, save);
-
-		/* Aufgabe 2 Y-Only Image Histogramm */
-
-		BmpImage lumi = open_bmp(save);
-
-		Histogramm(lumi, BrightnessHistogramm(lumi));
-		save = args[1].split("\\.")[0];
-		save+="_Histogramm";
-		save+='.'+args[1].split("\\.")[1];
-
-		save_bmp(lumi, save);
-
-
 
 		//reset bmp
 		bmp = open_bmp(args[0]);
@@ -459,6 +472,59 @@ public final class bmp_io {
 		save+="_YCbCr_only_Cr";
 		save+='.'+args[1].split("\\.")[1];
 		save_bmp(bmp, save);
+
+		//reset bmp
+		bmp = open_bmp(args[0]);
+
+		bmp = lumin(bmp);
+		String lumin_save = args[1].split("\\.")[0];
+		lumin_save+="_luminance_all_channels";
+		lumin_save+='.'+args[1].split("\\.")[1];
+		save_bmp(bmp, lumin_save);
+		/* Aufgabe 2 Y-Only Image Histogramm */
+
+		BmpImage lumi = open_bmp(lumin_save);
+		int[] datas = BrightnessHistogramm(lumi);
+		save_histo_data(datas);
+		Histogramm(lumi, datas);
+		save = args[1].split("\\.")[0];
+		save+="_Histogramm";
+		save+='.'+args[1].split("\\.")[1];
+
+		save_bmp(lumi, save);
+
+		/*Aufgabe 3*/
+		//reset
+		lumi = open_bmp(lumin_save);
+		System.out.println("Mittlere Helligkeit: "+MittlereHelligkeit(lumi));
+
+		System.out.println("Kontrast: "+Kontrast(lumi));
+
+		int[] hs = new int[]{-80,-60,-40,-20,20,40,60,80};
+		for (int i = 0; i<hs.length; i++){
+			int h = hs[i];
+			//reset
+			lumi = open_bmp(lumin_save);
+			change_brightness(lumi, h);
+			save = args[1].split("\\.")[0];
+			save+="_Brightness_"+h;
+			save+='.'+args[1].split("\\.")[1];
+
+			save_bmp(lumi, save);
+			if (i == 0 || i==hs.length-1){
+				Histogramm(lumi, BrightnessHistogramm(lumi));
+				save = args[1].split("\\.")[0];
+				save+="_HistogrammBrightness_"+h;
+				save+='.'+args[1].split("\\.")[1];
+
+				save_bmp(lumi, save);
+
+			}
+
+		}
+
+
+
 
 		/*
 
