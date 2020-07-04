@@ -188,15 +188,19 @@ public final class bmp_io {
 	public static double brightness(PixelColor p){
 		return (p.r+p.g+p.b)/3.0;
 	}
-	public static PixelColor change_contrast(PixelColor p, int k){
-
-		int r = Math.max(0, Math.min(255, k*(p.r-128)+128));
-		int g = Math.max(0, Math.min(255, k*(p.g-128)+128));
-		int b = Math.max(0, Math.min(255, k*(p.b-128)-128));
+	public static PixelColor change_contrast(PixelColor p, double k){
+		double contrast_correction_factor = k;//259*(k+255)/255*(259-k);
+		double bright = brightness(p);
+		double red   = contrast_correction_factor*(bright-128)+128;
+		double green = contrast_correction_factor*(bright-128)+128;
+		double blue  = contrast_correction_factor*(bright-128)+128;
+		int r = (int)Math.max(0, Math.min(255, red));
+		int g = (int)Math.max(0, Math.min(255, green));
+		int b = (int)Math.max(0, Math.min(255, blue));
 		return new PixelColor(r, g, b);
 	}
 
-	public static BmpImage change_contrast(BmpImage bmp, int k){
+	public static BmpImage change_contrast(BmpImage bmp, double k){
 		for(int y = 0; y < bmp.image.getHeight(); y++) {
 			for (int x = 0; x < bmp.image.getWidth(); x++) {
 				PixelColor pixel = bmp.image.getRgbPixel(x, y);
@@ -522,8 +526,29 @@ public final class bmp_io {
 			}
 
 		}
+		/*Kontrast */
+		double[] ks = new double[]{0.2,0.4,0.8,1.0,1.5,2.5,5.0,10.0};
+		for (int i = 0; i<ks.length; i++){
+			double k = ks[i];
+			//reset
+			lumi = open_bmp(lumin_save);
+			change_contrast(lumi, k);
+			save = args[1].split("\\.")[0];
+			save+="_Kontrast_"+k;
+			save+='.'+args[1].split("\\.")[1];
 
+			save_bmp(lumi, save);
+			if (i == 0 || i==hs.length-1){
+				Histogramm(lumi, BrightnessHistogramm(lumi));
+				save = args[1].split("\\.")[0];
+				save+="_HistogrammKontrast_"+k;
+				save+='.'+args[1].split("\\.")[1];
 
+				save_bmp(lumi, save);
+
+			}
+
+		}
 
 
 		/*

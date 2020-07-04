@@ -409,20 +409,79 @@ Manmade:
 Histogramme:
 <img src="./out/Ue4/1/manmade_HistogrammBrightness_-80.bmp">
 <img src="./out/Ue4/1/manmade_HistogrammBrightness_80.bmp">>
-<img src="./out/Ue4/3/...">
 
 <h4>c) Erhöhe bzw. verringere den Kontrast durch Muliplikation mit den Faktoren k=(0.2, 0.4, 0.8, 1.0) und k=(1.5, 2.5, 5.0, 10.0). Was passiert bei Kontraständerung k &lt; 0?</h4>
 <p>
     Source Code unter annahme das k einer der in c) genannten werte ist.
     <code>
-
+        public static double brightness(PixelColor p){
+            return (p.r+p.g+p.b)/3.0;
+        }
+        public static PixelColor change_contrast(PixelColor p, double k){
+            double contrast_correction_factor = k;//259*(k+255)/255*(259-k);
+            double bright = brightness(p);
+            double red   = contrast_correction_factor*(bright-128)+128;
+            double green = contrast_correction_factor*(bright-128)+128;
+            double blue  = contrast_correction_factor*(bright-128)+128;
+            int r = (int)Math.max(0, Math.min(255, red));
+            int g = (int)Math.max(0, Math.min(255, green));
+            int b = (int)Math.max(0, Math.min(255, blue));
+            return new PixelColor(r, g, b);
+        }
+    
+        public static BmpImage change_contrast(BmpImage bmp, double k){
+            for(int y = 0; y < bmp.image.getHeight(); y++) {
+                for (int x = 0; x < bmp.image.getWidth(); x++) {
+                    PixelColor pixel = bmp.image.getRgbPixel(x, y);
+    
+                    bmp.image.setRgbPixel(x, y, change_contrast(pixel, k));
+                }
+            }
+            return bmp;
+        }
     </code>
-    Histogramm kontrastarm:
-    <img src="./out/Ue4/3/...">
-    Histogramm kontrastreich:
-    <img src="./out/Ue4/3/...">
+    Nature:
+    [Oben links -80 Helligkeit -> +20]
+    [links 20 Helligkeit -> +80]
+    <div class="gallery">
+
+        <img src="./out/Ue4/1/nature_Kontrast_0.2.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_0.4.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_0.8.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_1.0.bmp">
+        
+        <img src="./out/Ue4/1/nature_Kontrast_1.5.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_2.5.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_5.0.bmp">
+        <img src="./out/Ue4/1/nature_Kontrast_10.0.bmp">    
+    </div>
+    Histogramm kontrastarm k=0.2:
+    <img src="./out/Ue4/1/nature_HistogrammKontrast_0.2.bmp">
+    Histogramm kontrastreich k=10.0:
+    <img src="./out/Ue4/1/nature_HistogrammKontrast_10.0.bmp">
+
+    Manmade:
+    [Oben links -80 Helligkeit -> +20]
+    [links 20 Helligkeit -> +80]
+    <div class="gallery">
+
+        <img src="./out/Ue4/1/manmade_Kontrast_0.2.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_0.4.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_0.8.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_1.0.bmp">
+        
+        <img src="./out/Ue4/1/manmade_Kontrast_1.5.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_2.5.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_5.0.bmp">
+        <img src="./out/Ue4/1/manmade_Kontrast_10.0.bmp">    
+    </div>
+    Histogramm kontrastarm k=0.2:
+    <img src="./out/Ue4/1/manmade_HistogrammKontrast_0.2.bmp">
+    Histogramm kontrastreich k=10.0:
+    <img src="./out/Ue4/1/manmade_HistogrammKontrast_10.0.bmp">
 
     Vergleiche mit Histogrammen mit Helligkeitsänderung aus b):
+    Bei der Kontraständerung können Helligkeitswerte verloren gehen die bei KontrastOperationen außerhalb der Reichweite [0-255] lagen und somit trunkiert wurden.
 
     Vergleich mit Histogramm aus Aufgabe 2:
 
