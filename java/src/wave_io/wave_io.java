@@ -151,7 +151,7 @@ public class wave_io
 			WavFile music = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
 			WavFile speech = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
 
-			/* verstärke music 3,6,9db */
+			/* verstärke music 3,6,9, 12db */
 			int increase = 3;
 			String outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
 			System.out.println("Saving File to " + outFilePath);
@@ -174,6 +174,17 @@ public class wave_io
 			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
 			System.out.println("Saving File to " + outFilePath);
 
+			WavFile verstarkt9db = verstaerken(wavFile, increase);
+			wav_save(verstarkt9db, outFilePath);
+
+			//reset
+			wavFile = wav_open(inFilename);
+			increase = 12;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile verstarkt12db = verstaerken(wavFile, increase);
+			wav_save(verstarkt12db, outFilePath);
 
 			/* verstärke noise 3,6,9db */
 			//WavFile Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
@@ -200,7 +211,15 @@ public class wave_io
 			WavFile Noise_verstarkt9db = verstaerken(Noise, increase);
 			wav_save(Noise_verstarkt9db, outFilePath);
 
-			/* verstärke 1khz sine wave 3,6,9db */
+			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			increase = 12;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\Noise_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile Noise_verstarkt12db = verstaerken(Noise, increase);
+			wav_save(Noise_verstarkt12db, outFilePath);
+
+			/* verstärke 1khz sine wave 3,6,9, 12db */
 			sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
 
 			increase = 3;
@@ -228,6 +247,14 @@ public class wave_io
 			WavFile sine_verstarkt9db = verstaerken(sinewave1khz, increase);
 			wav_save(sine_verstarkt9db, outFilePath);
 
+			sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
+
+			increase = 12;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\sinewave1khz_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile sine_verstarkt12db = verstaerken(sinewave1khz, increase);
+			wav_save(sine_verstarkt12db, outFilePath);
 			/*Aufgabe 2*/
 			double delay = 10;
 			for (double d : new double[]{10,100,200,1000}){

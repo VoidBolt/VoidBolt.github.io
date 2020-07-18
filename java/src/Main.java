@@ -55,7 +55,19 @@ public class Main {
     }
     public static void main( String[] args ) throws IOException {
         //bmp_io_test();
-        wave_io_test();
+        //wave_io_test();
+        double zaehler = 0;
 
+        double nenner = 0;
+        int i =0;
+        for (double d: new double[]{93, 75, 60, 57, 50, 46, 40}){
+            double la = Math.pow(10, d/20);
+            if (i!=0){
+                zaehler += Math.pow(la, 2);
+            }
+            nenner += Math.pow(la, 2);
+            i++;
+        }
+        System.out.println(Math.sqrt(zaehler)/Math.sqrt(nenner));
     }
 }
