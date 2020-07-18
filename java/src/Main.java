@@ -3,6 +3,8 @@ import bmp_io.bmp_io;
 import java.io.IOException;
 
 public class Main {
+
+
     public static void wave_io_test(){
         String ext = ".wav";
         String filename = "musik_Marcel_Pulletz";
@@ -16,8 +18,8 @@ public class Main {
         String filename_new = filename+"_new";
         String filename2_new = filename+"_new";
 
-        String folder2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\";
-        String folder = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\ue1\\";
+        //String folder2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\";
+        String folder = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\";
 
         /*
         System.out.println("Musik:");
@@ -25,12 +27,16 @@ public class Main {
         //String output = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\"+filename_new+ext;
         wave_io.wave_io.main(new String[]{input});
         */
-        System.out.println("Sprache:");
+        //System.out.println("Sprache:");
 
 
-        String input2 = folder+sinewave_lo+ext;
-        String output2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\"+sinewave_lo+"_downsample3"+ext;
-        wave_io.wave_io.main(new String[]{input2, output2});
+        //String input2 = folder+sinewave_lo+ext;
+        //String output2 = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\"+sinewave_lo+"_downsample3"+ext;
+
+        String music_original = folder + "musik_mono.wav";
+        String rauschen_original = folder + "rauschen.wav";
+
+        wave_io.wave_io.main2(new String[]{music_original});
     }
     public static void bmp_io_test() throws IOException {
         String ext = ".bmp";
@@ -48,6 +54,8 @@ public class Main {
 
     }
     public static void main( String[] args ) throws IOException {
-        bmp_io_test();
+        //bmp_io_test();
+        wave_io_test();
+
     }
 }

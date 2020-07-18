@@ -5,10 +5,289 @@ import java.io.Writer;
 
 import static java.lang.Math.abs;
 
+
+
 public class wave_io 
 {
+	public static WavFile wav_open(String input) throws IOException, WavFileException {
+		return WavFile.read_wav(input);
+	}
+	public static void wav_save(WavFile wavFile, String path) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+		WavFile.write_wav(path, channels, numFrames, validBits, sampleRate, wavFile.sound);
+	}
+	public static void wav_save(int validBits, long sampleRate, long numFrames, int channels, int samples, short[] wav, String path) throws IOException, WavFileException {
+		WavFile.write_wav(path, channels, numFrames, validBits, sampleRate, wav);
+	}
+	/*
+	1 a) -> Kirrfaktor tabelle für [3,6,9]db
+	 */
+	public static WavFile verstaerken(WavFile wavFile, int db){
+
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		short upper_bounds = 32767;
+		short lower_bounds = -32768;
+
+		for (int i = 0; i < samples;i++){
+			short sample = wavFile.sound[i];
+			double verstaerkungsFaktor = Math.pow(10, ((double)db/20));
+			double verstaerkung = sample * verstaerkungsFaktor;
+
+			short new_sample = (short)Math.max(lower_bounds, Math.min(upper_bounds, verstaerkung));
+
+			wavFile.sound[i] = new_sample;
+		}
+		return wavFile;
+	}
+
+	/*
+	2 a) -> mono echo und stereo echo
+	 */
+	public static WavFile mono_echo(WavFile wavFile, double delay) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		int N = (int)((delay/1000)*sampleRate);
+		double verstaerkung = 0.6;
+
+		short[] echo = new short[wavFile.sound.length];
+		for(int i = 0; i < samples; i++){
+			if (i >= N){
+				echo[i] = (short) ((wavFile.sound[i]*0.5) + (0.5 * verstaerkung * wavFile.sound[i-N]));
+			}else{
+				echo[i] = (short)(wavFile.sound[i]*0.5);
+			}
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, echo,"C:\\tmp\\mono_echo.wav");
+		return wav_open("C:\\tmp\\mono_echo.wav");
+	}
+	public static WavFile stereo_echo(WavFile wavFile, double delay) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		int N = (int)((delay/1000)*sampleRate);
+		N *= 2;
+		double verstaerkung = 0.6;
+
+		short[] echo = new short[wavFile.sound.length];
+		for(int i = 0; i < samples; i++){
+			if (i >= N){
+				echo[i] = (short) ((wavFile.sound[i]*0.5) + (0.5 * verstaerkung * wavFile.sound[i-N]));
+			}else{
+				echo[i] = (short)(wavFile.sound[i]*0.5);
+			}
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, echo,"C:\\tmp\\stereo_echo.wav");
+		return wav_open("C:\\tmp\\stereo_echo.wav");
+	}
+	/*
+	3 a)
+	 */
+	public static WavFile filter_add(WavFile wavFile) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		short[] wav = wavFile.sound;
+		short[] filtered_wav = new short[wav.length];
+
+		for (int i = 2; i < wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-2]);
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_add.wav");
+		return wav_open("C:\\tmp\\filter_add.wav");
+	}
+	public static WavFile filter_sub(WavFile wavFile) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		short[] wav = wavFile.sound;
+		short[] filtered_wav = new short[wav.length];
+
+		for (int i = 2; i < wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-2]);
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_sub.wav");
+		return wav_open("C:\\tmp\\filter_sub.wav");
+	}
+
+	public static void main2(String[] args){
+		if (args.length < 1) {
+			try { throw new WavFileException("At least one filename specified  (" + args.length + ")"); }
+			catch (WavFileException e1) { e1.printStackTrace(); }
+		}
+		String inFilename = args[0];
+		try {
+			System.out.println("Loading File from "+inFilename);
+			WavFile wavFile = wav_open(inFilename);
+			WavFile rauschen = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\rauschen.wav");
+			WavFile Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			WavFile sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
+
+			WavFile music = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
+			WavFile speech = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
+
+			/* verstärke music 3,6,9db */
+			int increase = 3;
+			String outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile verstarkt3db = verstaerken(wavFile, increase);
+			wav_save(verstarkt3db, outFilePath);
+
+			//reset
+			wavFile = wav_open(inFilename);
+			increase = 6;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile verstarkt6db = verstaerken(wavFile, increase);
+			wav_save(verstarkt6db, outFilePath);
+
+			//reset
+			wavFile = wav_open(inFilename);
+			increase = 9;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\music_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+
+			/* verstärke noise 3,6,9db */
+			//WavFile Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			increase = 3;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\Noise_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile Noise_verstarkt3db = verstaerken(Noise, increase);
+			wav_save(Noise_verstarkt3db, outFilePath);
+
+			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			increase = 6;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\Noise_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile Noise_verstarkt6db = verstaerken(Noise, increase);
+			wav_save(Noise_verstarkt6db, outFilePath);
+
+			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			increase = 9;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\Noise_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile Noise_verstarkt9db = verstaerken(Noise, increase);
+			wav_save(Noise_verstarkt9db, outFilePath);
+
+			/* verstärke 1khz sine wave 3,6,9db */
+			sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
+
+			increase = 3;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\sinewave1khz_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile sine_verstarkt3db = verstaerken(sinewave1khz, increase);
+			wav_save(sine_verstarkt3db, outFilePath);
+
+			sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
+
+			increase = 6;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\sinewave1khz_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile sine_verstarkt6db = verstaerken(sinewave1khz, increase);
+			wav_save(sine_verstarkt6db, outFilePath);
+
+			sinewave1khz = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sine_1k.wav");
+
+			increase = 9;
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\sinewave1khz_verstarkt"+increase+"db.wav";
+			System.out.println("Saving File to " + outFilePath);
+
+			WavFile sine_verstarkt9db = verstaerken(sinewave1khz, increase);
+			wav_save(sine_verstarkt9db, outFilePath);
+
+			/*Aufgabe 2*/
+			double delay = 10;
+			for (double d : new double[]{10,100,200,1000}){
+				music = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
+				WavFile mono_echo_music = mono_echo(music, d);
+				outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\mono_echo_music"+d+".wav";
+				wav_save(mono_echo_music, outFilePath);
+
+				music = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\musik_Marcel_Pulletz.wav");
+				WavFile stereo_echo_music = stereo_echo(music,d);
+				outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\stereo_echo_music"+d+".wav";
+				wav_save(stereo_echo_music, outFilePath);
+
+				speech = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sprache_Marcel_Pulletz.wav");
+				WavFile mono_echo_speech = mono_echo(speech, d);
+				outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\mono_echo_speech_"+d+"ms.wav";
+				wav_save(mono_echo_speech, outFilePath);
+
+				speech = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\sprache_Marcel_Pulletz.wav");
+				WavFile stereo_echo_speech = stereo_echo(speech, d);
+				outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\stereo_echo_speech_"+d+"ms.wav";
+				wav_save(stereo_echo_speech, outFilePath);
+			}
+
+
+
+			/*Aufgabe 3*/
+
+			rauschen = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\rauschen.wav");
+			WavFile filtered_rauschen_add = filter_add(rauschen);
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_rauschen_add.wav";
+			wav_save(filtered_rauschen_add, outFilePath);
+
+			rauschen = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\rauschen.wav");
+			WavFile filtered_rauschen_sub = filter_sub(rauschen);
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_rauschen_sub.wav";
+			wav_save(filtered_rauschen_sub, outFilePath);
+
+
+			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			WavFile filtered_Noise_add = filter_add(Noise);
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_Noise_add.wav";
+			wav_save(filtered_Noise_add, outFilePath);
+
+			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
+			WavFile filtered_Noise_sub = filter_sub(Noise);
+			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_Noise_sub.wav";
+			wav_save(filtered_Noise_sub, outFilePath);
+
+
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		} catch (WavFileException e1) {
+			e1.printStackTrace();
+		}
+	}
 	public static void main(String[] args) 
 	{
+
 		int samples=0;
 		int validBits=0;
 		long sampleRate=0;

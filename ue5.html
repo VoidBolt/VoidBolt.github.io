@@ -1,0 +1,215 @@
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="format.css">
+<style type="text/css">
+                 a:link {font-family:Arial;        font-size:10pt;        text-decoration:none;}
+                a:visited {font-family:Arial; font-size:10pt; text-decoration:none;}
+                a:hover {color:#FF3333; text-decoration:none; font-weight:normal; font-size:10pt;}
+                img{
+                    max-width: 100%;
+                }
+                pre code {
+                    background-color: #eee;
+                    border: 1px solid #999;
+                    display: block;
+                    padding: 20px;
+                }
+                html,body{
+                    width:100%;
+                }
+                pre:first{
+                    width:100%;
+                }
+                p, h4{
+                    overflow:auto;
+                    width:100%;
+                }
+
+                .gallery{
+                    display: flex;
+                    flex-flow: row wrap;
+                }
+                .gallery img{
+                    width:25%;
+                }
+</style>
+</head>
+
+<body>
+
+<iframe src="oben.html" width="800" height="120" name="IFrame3" id="IFrame3" scrolling="no" frameborder="0">
+         <p>Ihr Browser kann leider keine eingebe5tteten Frames anzeigen:Sie k&ouml;nnen die eingebettete Seite &uuml;ber den
+         folgenden.</p>
+</iframe>
+
+<br><h3>Aufgabe 1 Klirrfaktor a) Verstärkung [3db, 6db, 9db] der musik-datei. Gegeben sind:</h3>
+
+<pre>
+
+<p>
+Musik:
+<audio controls><source src="./audio/originals/musik_mono.wav" type="audio/wav"></audio>
+<img src="./audio/originals/music_frequency analysis.png">
+
+Rauschen (Vorsicht Laut):
+<audio controls><source src="./audio/originals/rauschen.wav" type="audio/wav"></audio>
+<img src="./audio/originals/rauschen_frequency analysis.png">
+
+
+    <code>
+        public static WavFile verstaerken(WavFile wavFile, int db){
+
+            int validBits = wavFile.getValidBits();
+            long sampleRate = wavFile.getSampleRate();
+            long numFrames = wavFile.getNumFrames();
+            int channels = wavFile.getNumChannels();
+            int samples = (int)numFrames*channels;
+    
+            short upper_bounds = 32767;
+            short lower_bounds = -32768;
+    
+            for (int i = 0; i &lt samples;i++){
+                short sample = wavFile.sound[i];
+                double verstaerkungsFaktor = Math.pow(10, ((double)db/20));
+                double verstaerkung = sample * verstaerkungsFaktor;
+    
+                short new_sample = (short)Math.max(lower_bounds, Math.min(upper_bounds, verstaerkung));
+    
+                wavFile.sound[i] = new_sample;
+            }
+            return wavFile;
+        }
+    
+
+    </code>
+
+</p>
+
+<h4>b)</h4>
+<p>
+3db verstärkung:
+<audio controls><source src="./audio/test/music_verstarkt3db.wav" type="audio/wav"></audio>
+6db verstärkung:
+<audio controls><source src="./audio/test/music_verstarkt6db.wav" type="audio/wav"></audio>
+9db verstärkung:
+<audio controls><source src="./audio/test/music_verstarkt9db.wav" type="audio/wav"></audio>
+</p>
+
+<h4>c) 1khz sine wave verstärkt um 3,6,9db</h4>
+<p>
+    3db verstärkung:
+    <audio controls><source src="./audio/test/sinewave1khz_verstarkt3db.wav" type="audio/wav"></audio>
+    <img src="./audio/test/sine1khz_3db_spectrum.png">
+    6db verstärkung:
+    <audio controls><source src="./audio/test/sinewave1khz_verstarkt6db.wav" type="audio/wav"></audio>
+    <img src="./audio/test/sine1khz_6db_spectrum.png">
+
+    9db verstärkung:
+    <audio controls><source src="./audio/test/sinewave1khz_verstarkt9db.wav" type="audio/wav"></audio>
+    <img src="./audio/test/sine1khz_9db_spectrum.png">
+
+
+<br><h3>Aufgabe 2 Echo</h3>
+
+</p>
+
+
+<code>
+	public static WavFile mono_echo(WavFile wavFile, double delay) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		int N = (int)((delay/1000)*sampleRate);
+		double verstaerkung = 0.6;
+
+		short[] echo = new short[wavFile.sound.length];
+		for(int i = 0; i &lt samples; i++){
+			if (i >= N){
+				echo[i] = (short) ((wavFile.sound[i]*0.5) + (0.5 * verstaerkung * wavFile.sound[i-N]));
+			}else{
+				echo[i] = (short)(wavFile.sound[i]*0.5);
+			}
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, echo,"C:\\tmp\\mono_echo.wav");
+		return wav_open("C:\\tmp\\mono_echo.wav");
+	}
+	public static WavFile stereo_echo(WavFile wavFile, double delay) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		int N = (int)((delay/1000)*sampleRate);
+		N *= 2;
+		double verstaerkung = 0.6;
+
+		short[] echo = new short[wavFile.sound.length];
+		for(int i = 0; i &lt samples; i++){
+			if (i >= N){
+				echo[i] = (short) ((wavFile.sound[i]*0.5) + (0.5 * verstaerkung * wavFile.sound[i-N]));
+			}else{
+				echo[i] = (short)(wavFile.sound[i]*0.5);
+			}
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, echo,"C:\\tmp\\stereo_echo.wav");
+		return wav_open("C:\\tmp\\stereo_echo.wav");
+	}
+
+</code>
+a)
+N = Verzögerung * Abtastfrequenz
+
+N = 10 ms * 44.1 kHz = 441 Abtastwerte
+
+N = 100 ms * 44.1 kHz = 4410 Abtastwerte
+
+N = 200 ms * 44.1 kHz = 8820 Abtastwerte
+
+<br><h3>Aufgabe 3 Einfacher Filter</h3>
+
+<code>
+    public static WavFile filter_add(WavFile wavFile) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		short[] wav = wavFile.sound;
+		short[] filtered_wav = new short[wav.length];
+
+		for (int i = 2; i &lt wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-2]);
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_add.wav");
+		return wav_open("C:\\tmp\\filter_add.wav");
+	}
+	public static WavFile filter_sub(WavFile wavFile) throws IOException, WavFileException {
+		int validBits = wavFile.getValidBits();
+		long sampleRate = wavFile.getSampleRate();
+		long numFrames = wavFile.getNumFrames();
+		int channels = wavFile.getNumChannels();
+		int samples = (int)numFrames*channels;
+
+		short[] wav = wavFile.sound;
+		short[] filtered_wav = new short[wav.length];
+
+		for (int i = 2; i &lt wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-2]);
+		}
+
+		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_sub.wav");
+		return wav_open("C:\\tmp\\filter_sub.wav");
+	}
+</code>
+</p>
+</body>
+</html>
