@@ -226,7 +226,7 @@ N = 200 ms * 44.1 kHz = 8820 Abtastwerte
 <br><h3>Aufgabe 3 Einfacher Filter</h3>
 
 <code>
-    public static WavFile filter_add(WavFile wavFile) throws IOException, WavFileException {
+	public static WavFile filter_add_mono(WavFile wavFile) throws IOException, WavFileException {
 		int validBits = wavFile.getValidBits();
 		long sampleRate = wavFile.getSampleRate();
 		long numFrames = wavFile.getNumFrames();
@@ -236,14 +236,15 @@ N = 200 ms * 44.1 kHz = 8820 Abtastwerte
 		short[] wav = wavFile.sound;
 		short[] filtered_wav = new short[wav.length];
 
-		for (int i = 2; i &lt wav.length; i++){
-			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-2]);
+		int N = 1;
+		for (int i = N; i &lt wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-N]);
 		}
 
 		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_add.wav");
 		return wav_open("C:\\tmp\\filter_add.wav");
 	}
-	public static WavFile filter_sub(WavFile wavFile) throws IOException, WavFileException {
+	public static WavFile filter_sub_mono(WavFile wavFile) throws IOException, WavFileException {
 		int validBits = wavFile.getValidBits();
 		long sampleRate = wavFile.getSampleRate();
 		long numFrames = wavFile.getNumFrames();
@@ -253,8 +254,9 @@ N = 200 ms * 44.1 kHz = 8820 Abtastwerte
 		short[] wav = wavFile.sound;
 		short[] filtered_wav = new short[wav.length];
 
-		for (int i = 2; i &lt wav.length; i++){
-			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-2]);
+		int N = 1;
+		for (int i = N; i &lt wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-N]);
 		}
 
 		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_sub.wav");

@@ -100,7 +100,7 @@ public class wave_io
 	/*
 	3 a)
 	 */
-	public static WavFile filter_add(WavFile wavFile) throws IOException, WavFileException {
+	public static WavFile filter_add_mono(WavFile wavFile) throws IOException, WavFileException {
 		int validBits = wavFile.getValidBits();
 		long sampleRate = wavFile.getSampleRate();
 		long numFrames = wavFile.getNumFrames();
@@ -110,14 +110,15 @@ public class wave_io
 		short[] wav = wavFile.sound;
 		short[] filtered_wav = new short[wav.length];
 
-		for (int i = 2; i < wav.length; i++){
-			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-2]);
+		int N = 1;
+		for (int i = N; i < wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 + 0.45 * wav[i-N]);
 		}
 
 		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_add.wav");
 		return wav_open("C:\\tmp\\filter_add.wav");
 	}
-	public static WavFile filter_sub(WavFile wavFile) throws IOException, WavFileException {
+	public static WavFile filter_sub_mono(WavFile wavFile) throws IOException, WavFileException {
 		int validBits = wavFile.getValidBits();
 		long sampleRate = wavFile.getSampleRate();
 		long numFrames = wavFile.getNumFrames();
@@ -127,8 +128,9 @@ public class wave_io
 		short[] wav = wavFile.sound;
 		short[] filtered_wav = new short[wav.length];
 
-		for (int i = 2; i < wav.length; i++){
-			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-2]);
+		int N = 1;
+		for (int i = N; i < wav.length; i++){
+			filtered_wav[i] = (short) (wav[i] * 0.5 - 0.45 * wav[i-N]);
 		}
 
 		wav_save(validBits, sampleRate, numFrames, channels, samples, filtered_wav,"C:\\tmp\\filter_sub.wav");
@@ -284,23 +286,23 @@ public class wave_io
 			/*Aufgabe 3*/
 
 			rauschen = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\rauschen.wav");
-			WavFile filtered_rauschen_add = filter_add(rauschen);
+			WavFile filtered_rauschen_add = filter_add_mono(rauschen);
 			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_rauschen_add.wav";
 			wav_save(filtered_rauschen_add, outFilePath);
 
 			rauschen = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\rauschen.wav");
-			WavFile filtered_rauschen_sub = filter_sub(rauschen);
+			WavFile filtered_rauschen_sub = filter_sub_mono(rauschen);
 			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_rauschen_sub.wav";
 			wav_save(filtered_rauschen_sub, outFilePath);
 
 
 			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
-			WavFile filtered_Noise_add = filter_add(Noise);
+			WavFile filtered_Noise_add = filter_add_mono(Noise);
 			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_Noise_add.wav";
 			wav_save(filtered_Noise_add, outFilePath);
 
 			Noise = wav_open("C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\originals\\Noise.wav");
-			WavFile filtered_Noise_sub = filter_sub(Noise);
+			WavFile filtered_Noise_sub = filter_sub_mono(Noise);
 			outFilePath = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\audio\\test\\filtered_Noise_sub.wav";
 			wav_save(filtered_Noise_sub, outFilePath);
 

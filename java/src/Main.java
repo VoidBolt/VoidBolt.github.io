@@ -55,8 +55,8 @@ public class Main {
     }
     public static void main( String[] args ) throws IOException {
         //bmp_io_test();
-        //wave_io_test();
-        double zaehler = 0;
+        wave_io_test();
+        /*double zaehler = 0;
 
         double nenner = 0;
         int i =0;
@@ -69,5 +69,6 @@ public class Main {
             i++;
         }
         System.out.println(Math.sqrt(zaehler)/Math.sqrt(nenner));
+        */
     }
 }
