@@ -1,0 +1,180 @@
+<html>
+<head>
+<title></title>
+<link rel="stylesheet" type="text/css" href="format.css">
+<style type="text/css">
+                 a:link {font-family:Arial;        font-size:10pt;        text-decoration:none;}
+                a:visited {font-family:Arial; font-size:10pt; text-decoration:none;}
+                a:hover {color:#FF3333; text-decoration:none; font-weight:normal; font-size:10pt;}
+                img{
+                    max-width: 100%;
+                }
+                pre code {
+                    background-color: #eee;
+                    border: 1px solid #999;
+                    display: block;
+                    padding: 20px;
+                }
+                html,body{
+                    width:100%;
+                }
+                pre:first{
+                    width:100%;
+                }
+                p, h4{
+                    overflow:auto;
+                    width:100%;
+                }
+
+                .gallery{
+                    display: flex;
+                    flex-flow: row wrap;
+                }
+                .gallery img{
+                    width:25%;
+                }
+</style>
+</head>
+
+<body>
+
+<iframe src="oben.html" width="800" height="120" name="IFrame3" id="IFrame3" scrolling="no" frameborder="0">
+         <p>Ihr Browser kann leider keine eingebe5tteten Frames anzeigen:Sie k&ouml;nnen die eingebettete Seite &uuml;ber den
+         folgenden.</p>
+</iframe>
+
+<img src="./out/Ue6/original.bmp">
+<img src="./out/Ue6/original2.bmp">
+<br><h3>Aufgabe 1 Mittelwert</h3>
+<pre>
+<p>
+6.1.a
+<code>
+	private static int average(int[][] kernel) {
+		double sum = 0;
+		for(int x = 0; x &lt kernel.length; x++) { // x
+			for(int y = 0; y &lt kernel.length; y++) { // y
+				sum += kernel[x][y];
+			}
+		}
+		int avg = (int) Math.round(sum/(kernel.length*kernel.length));
+		return avg;
+	}
+	private static BmpImage mittelwertfilter(BmpImage bmp, BmpImage copy){
+		int height = bmp.image.getHeight();
+		int width = bmp.image.getWidth();
+
+		for (int y = 0; y &lt height; y++) {
+			for (int x = 0; x &lt width; x++) {
+				// Kernel[x][y]
+				int dim_x = 3;
+				int dim_y = 3;
+				int[][] kernel = new int[dim_x][dim_y];
+
+				for(int j = 0; j &lt dim_y; j++) { // y
+					for(int i = 0; i &lt dim_x; i++) { // x
+						int xKernel = x + (i-1);
+						int yKernel = y + (j-1);
+
+						if (pixelInRange(xKernel, yKernel, width, height)) {
+							kernel[i][j] = bmp.image.getRgbPixel(xKernel, yKernel).r;
+						} else {
+							kernel[i][j] = 0;
+						}
+					}
+				}
+
+				int average = average(kernel);
+
+				PixelColor color = new PixelColor(average, average, average);
+				copy.image.setRgbPixel(x, y, color);
+
+			}
+		}
+		return copy;
+	}
+</code>
+
+</p>
+<img src="./out/Ue6/original_grayscale.bmp">
+<img src="./out/Ue6/original2_grayscale.bmp">
+<img src="./out/Ue6/original_mittelwertfilter.bmp">
+<img src="./out/Ue6/original2_mittelwertfilter.bmp">
+
+Die Schärfe der bilder wird reduziert durch den Mittelwert der jeweiligen 9 Pixel innerhalb der 3x3 Matrix aus Pixeln des originalbildes.
+
+6.1.b
+Pixel die außerhalb des Bildes liegen bekommen für die Mittelwertberechnung den Wert 0.
+
+6.1.c
+
+<code>
+    /* 6 1c */
+	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage, BmpImage outputImage) throws IOException {
+		for (int y = 0; y &lt originalImage.image.getHeight(); y++) {
+			for (int x = 0; x &lt originalImage.image.getWidth(); x++) {
+				int originalValue = originalImage.image.getRgbPixel(x, y).r;
+				int filteredValue = filteredImage.image.getRgbPixel(x, y).r;
+
+				int diff = Math.abs(originalValue - filteredValue);
+
+				PixelColor color = new PixelColor(diff, diff, diff);
+				outputImage.image.setRgbPixel(x, y, color);
+			}
+		}
+		return outputImage;
+		//save_bmp(difference, outputFileName);
+	}
+</code>
+
+<br><h3>Aufgabe 2 GradientenFilter mit 3x3 Kernel</h3>
+
+<code>
+    private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) throws IOException {
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+		int[][] filterkernel = {{0, -2, 0},{-2, 12 ,-2},{0, -2, 0}};
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y &lt height; y++) {
+			for (int x = 0; x &lt width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = new int[3][3];
+
+				// Build Kernel for pixel
+				for(int i = 0; i &lt 3; i++) { // x
+					for(int j = 0; j &lt 3; j++) { // y
+						int xKernel = x + (j-1);
+						int yKernel = y + (i-1);
+
+						if (pixelInRange(xKernel, yKernel, width, height)) {
+							pixelkernel[i][j] = bmpImageOriginal.image.getRgbPixel(xKernel, yKernel).r;
+						} else {
+							pixelkernel[i][j] = 0;
+						}
+					}
+				}
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel)/4;
+
+				if(sum &lt 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+
+		//save_bmp(bmpImageFiltered, outputFileName);
+		return bmpImageFiltered;
+	}
+
+</code>
+
+<img src="./out/Ue6/original_gradient.bmp">
+<img src="./out/Ue6/original2_gradient.bmp">
+</p>
+</pre>
+</body>
+</html>

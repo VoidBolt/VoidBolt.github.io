@@ -5,6 +5,274 @@ import java.io.*;
 import java.util.HashMap;
 
 public final class bmp_io {
+	/* 6 4 */
+	private static BmpImage sobelfilterX(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+				int[][] filterkernel = {{1, 2, 1},{0, 0 ,0},{-1, -2, -1}};
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel);
+
+				if(sum < 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+		return bmpImageFiltered;
+	}
+
+	private static BmpImage sobelfilterY(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) {
+
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+		int[][] filterkernel = {{1, 0, -1},{2, 0 ,-2},{1, 0, -1}};
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel);
+
+				if(sum < 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+		return bmpImageFiltered;
+	}
+
+	/* 6 3 */
+	private static BmpImage medianfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+
+				int[] pixelvalues = new int[3*3];
+				for (int j = 0; j<3;j++){
+					for (int i = 0; i<3;i++){
+						int index = j*3 + i;
+						//System.out.println(i +"/"+ j);
+						pixelvalues[index] = pixelkernel[i][j];
+					}
+				}
+
+				int median = average(pixelvalues);
+
+				PixelColor color = new PixelColor(median, median, median);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+		return bmpImageFiltered;
+	}
+
+	private static int[][] buildkernel(BmpImage image, int y, int x) {
+		int height = image.image.getHeight();
+		int width = image.image.getWidth();
+		int[][] pixelkernel = new int[3][3];
+
+		// Build Kernel for pixel
+		for(int i = 0; i < 3; i++) { // x
+			for(int j = 0; j < 3; j++) { // y
+				int xKernel = x + (j-1);
+				int yKernel = y + (i-1);
+
+				if (pixelInRange(xKernel, yKernel, width, height)) {
+					pixelkernel[i][j] = image.image.getRgbPixel(xKernel, yKernel).r;
+				} else {
+					pixelkernel[i][j] = 0;
+				}
+			}
+		}
+		return pixelkernel;
+	}
+	/* 6 2 */
+	private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) throws IOException {
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+		int[][] filterkernel = {{0, -2, 0},{-2, 12 ,-2},{0, -2, 0}};
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = new int[3][3];
+
+				// Build Kernel for pixel
+				for(int i = 0; i < 3; i++) { // x
+					for(int j = 0; j < 3; j++) { // y
+						int xKernel = x + (j-1);
+						int yKernel = y + (i-1);
+
+						if (pixelInRange(xKernel, yKernel, width, height)) {
+							pixelkernel[i][j] = bmpImageOriginal.image.getRgbPixel(xKernel, yKernel).r;
+						} else {
+							pixelkernel[i][j] = 0;
+						}
+					}
+				}
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel)/4;
+
+				if(sum < 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+
+		//save_bmp(bmpImageFiltered, outputFileName);
+		return bmpImageFiltered;
+	}
+
+	private static int sumOfAllMatrixValues(int[][] matrix) {
+		int sum = 0;
+
+		for (int row = 0; row < 3; row++){
+			for(int column = 0; column < 3; column++){
+				sum += matrix[column][row];
+			}
+		}
+
+		return sum;
+	}
+
+	private static int[][] matrizenmultiplikation(int[][] matrix_A, int[][] matrix_B) {
+		int[][] matrix_C = new int[3][3];
+
+		for (int row = 0; row < 3; row++){
+			for(int column = 0; column < 3; column++){
+				matrix_C[column][row] = (matrix_A[column][row]*matrix_B[column][row]);
+			}
+		}
+
+		return matrix_C;
+	}
+
+	/* 6 1c */
+	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage, BmpImage outputImage) throws IOException {
+		for (int y = 0; y < originalImage.image.getHeight(); y++) {
+			for (int x = 0; x < originalImage.image.getWidth(); x++) {
+				int originalValue = originalImage.image.getRgbPixel(x, y).r;
+				int filteredValue = filteredImage.image.getRgbPixel(x, y).r;
+
+				int diff = Math.abs(originalValue - filteredValue);
+
+				PixelColor color = new PixelColor(diff, diff, diff);
+				outputImage.image.setRgbPixel(x, y, color);
+			}
+		}
+		return outputImage;
+		//save_bmp(difference, outputFileName);
+	}
+	/* 6 1a, b = setze 0 */
+	private static void mittelwertfilter(String inFileName, String outFilename) throws IOException {
+		BmpImage bmpImageOriginal = BmpReader.read_bmp(new FileInputStream(inFileName));
+		BmpImage bmpImageFiltered = BmpReader.read_bmp(new FileInputStream(inFileName));
+
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int[][] kernel = new int[3][3];
+
+				for(int i = 0; i < 3; i++) { // x
+					for(int j = 0; j < 3; j++) { // y
+						int xKernel = x + (j-1);
+						int yKernel = y + (i-1);
+
+						if (pixelInRange(xKernel, yKernel, width, height)) {
+							kernel[i][j] = bmpImageOriginal.image.getRgbPixel(xKernel, yKernel).r;
+						} else {
+							kernel[i][j] = 0;
+						}
+					}
+				}
+
+				int average = average(kernel);
+
+				PixelColor color = new PixelColor(average, average, average);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+		save_bmp(bmpImageFiltered, outFilename);
+	}
+
+	private static BmpImage mittelwertfilter(BmpImage bmp, BmpImage copy){
+		int height = bmp.image.getHeight();
+		int width = bmp.image.getWidth();
+
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				// Kernel[x][y]
+				int dim_x = 3;
+				int dim_y = 3;
+				int[][] kernel = new int[dim_x][dim_y];
+
+				for(int j = 0; j < dim_y; j++) { // y
+					for(int i = 0; i < dim_x; i++) { // x
+						int xKernel = x + (i-1);
+						int yKernel = y + (j-1);
+
+						if (pixelInRange(xKernel, yKernel, width, height)) {
+							kernel[i][j] = bmp.image.getRgbPixel(xKernel, yKernel).r;
+						} else {
+							kernel[i][j] = 0;
+						}
+					}
+				}
+
+				int average = average(kernel);
+
+				PixelColor color = new PixelColor(average, average, average);
+				copy.image.setRgbPixel(x, y, color);
+
+			}
+		}
+		return copy;
+	}
+	private static boolean pixelInRange(int x, int y, int width, int height) {
+		return (x >= 0 && y >= 0 && x < width && y < height);
+	}
+	private static int average(int[] arr){
+		int sum = 0;
+		for(int i = 0; i < arr.length; i++) {
+			sum += arr[i];
+		}
+		return (sum/arr.length);
+	}
+	private static int average(int[][] kernel) {
+		double sum = 0;
+		for(int x = 0; x < kernel.length; x++) { // x
+			for(int y = 0; y < kernel.length; y++) { // y
+				sum += kernel[x][y];
+			}
+		}
+		int avg = (int) Math.round(sum/(kernel.length*kernel.length));
+		return avg;
+	}
 
 	public static void save_histo_data(int[] data) throws IOException{
 		FileWriter writer = new FileWriter(	"C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue4\\1\\histo_data.txt");
@@ -364,6 +632,69 @@ public final class bmp_io {
 		} finally {
 			out.close();
 		}
+	}
+
+	public static void ue6(String filepath) throws IOException {
+		BmpImage original = open_bmp(filepath);
+
+
+		convert_RGB_to_YCbCr(original);
+		save_bmp(original, filepath.split("\\.")[0]+"_remapYCBCR.bmp");
+
+		/* Reset */
+		original = open_bmp(filepath);
+
+		grayscale(original);
+		save_bmp(original, filepath.split("\\.")[0]+"_grayscale.bmp");
+		BmpImage grayscale_orig = open_bmp(filepath.split("\\.")[0]+"_grayscale.bmp");
+
+		mittelwertfilter(grayscale_orig, original);
+
+		save_bmp(original, filepath.split("\\.")[0]+"_mittelwertfilter.bmp");
+
+		BmpImage differenzbild = differenzbild(grayscale_orig, original, open_bmp(filepath));
+		save_bmp(differenzbild, filepath.split("\\.")[0]+"_differenz.bmp");
+
+		for (double k : new double[]{-1.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 4.0, 8.0, 10.0}){
+			differenzbild = change_contrast(open_bmp(filepath.split("\\.")[0]+"_differenz.bmp"), k);
+			save_bmp(differenzbild, filepath.split("\\.")[0]+"_differenz_contrast_"+k+".bmp");
+			BmpImage gradientImage = gradientenfilter(open_bmp(filepath), differenzbild);
+			save_bmp(gradientImage, filepath.split("\\.")[0]+"_gradient_contrast_"+k+".bmp");
+		}
+
+		BmpImage medianImage = medianfilter(open_bmp(filepath.split("\\.")[0]+"_damaged.bmp"), open_bmp(filepath));
+		save_bmp(medianImage, filepath.split("\\.")[0]+"_median.bmp");
+
+		BmpImage sobelXImage = sobelfilterX(open_bmp(filepath), open_bmp(filepath));
+		save_bmp(sobelXImage, filepath.split("\\.")[0]+"_sobelX.bmp");
+
+		BmpImage sobelYImage = sobelfilterY(open_bmp(filepath), open_bmp(filepath));
+		save_bmp(sobelYImage, filepath.split("\\.")[0]+"_sobelY.bmp");
+
+
+
+
+	}
+	public static void main2(String[] args) throws IOException{
+		String path = "C:\\Users\\Kathr\\Documents\\Beuth\\SS20\\MedienTechnologien\\webseite\\out\\Ue6\\";
+
+		String tasse = "original.bmp";
+		String tafel = "original2.bmp";
+
+		ue6(path+tasse);
+		ue6(path+tafel);
+
+
+
+		/*
+		BmpImage orig = open_bmp(path+"Details_TEST-greyscale.bmp");
+		BmpImage copy = open_bmp(path+"Details_TEST-greyscale.bmp");
+		mittelwertfilter(orig, copy);
+
+		save_bmp(copy, path+"blur_test.bmp");
+
+		 */
+
 	}
 
 	public static void main(String[] args) throws IOException {

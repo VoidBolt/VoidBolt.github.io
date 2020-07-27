@@ -53,9 +53,12 @@ public class Main {
         bmp_io.main(new String[]{file2, outfile_full2});
 
     }
+
+
     public static void main( String[] args ) throws IOException {
+        bmp_io.main2(new String[]{});
         //bmp_io_test();
-        wave_io_test();
+        //wave_io_test();
         /*double zaehler = 0;
 
         double nenner = 0;
