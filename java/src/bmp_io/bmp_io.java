@@ -105,7 +105,7 @@ public final class bmp_io {
 		return pixelkernel;
 	}
 	/* 6 2 */
-	private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) throws IOException {
+	private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
 		int height = bmpImageOriginal.image.getHeight();
 		int width = bmpImageOriginal.image.getWidth();
 		int[][] filterkernel = {{0, -2, 0},{-2, 12 ,-2},{0, -2, 0}};
@@ -170,7 +170,7 @@ public final class bmp_io {
 	}
 
 	/* 6 1c */
-	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage, BmpImage outputImage) throws IOException {
+	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage){
 		for (int y = 0; y < originalImage.image.getHeight(); y++) {
 			for (int x = 0; x < originalImage.image.getWidth(); x++) {
 				int originalValue = originalImage.image.getRgbPixel(x, y).r;
@@ -179,11 +179,10 @@ public final class bmp_io {
 				int diff = Math.abs(originalValue - filteredValue);
 
 				PixelColor color = new PixelColor(diff, diff, diff);
-				outputImage.image.setRgbPixel(x, y, color);
+				filteredImage.image.setRgbPixel(x, y, color);
 			}
 		}
-		return outputImage;
-		//save_bmp(difference, outputFileName);
+		return filteredImage;
 	}
 	/* 6 1a, b = setze 0 */
 	private static void mittelwertfilter(String inFileName, String outFilename) throws IOException {
@@ -648,18 +647,31 @@ public final class bmp_io {
 		save_bmp(original, filepath.split("\\.")[0]+"_grayscale.bmp");
 		BmpImage grayscale_orig = open_bmp(filepath.split("\\.")[0]+"_grayscale.bmp");
 
-		mittelwertfilter(grayscale_orig, original);
+		BmpImage mittelwertImage = mittelwertfilter(grayscale_orig, open_bmp(filepath));
 
-		save_bmp(original, filepath.split("\\.")[0]+"_mittelwertfilter.bmp");
+		save_bmp(mittelwertImage, filepath.split("\\.")[0]+"_mittelwertfilter.bmp");
 
-		BmpImage differenzbild = differenzbild(grayscale_orig, original, open_bmp(filepath));
-		save_bmp(differenzbild, filepath.split("\\.")[0]+"_differenz.bmp");
+		BmpImage differenzbild = differenzbild(grayscale_orig, open_bmp(filepath.split("\\.")[0]+"_mittelwertfilter.bmp"));
+		save_bmp(differenzbild, filepath.split("\\.")[0]+"_mittelwert_differenz.bmp");
 
 		for (double k : new double[]{-1.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 4.0, 8.0, 10.0}){
-			differenzbild = change_contrast(open_bmp(filepath.split("\\.")[0]+"_differenz.bmp"), k);
-			save_bmp(differenzbild, filepath.split("\\.")[0]+"_differenz_contrast_"+k+".bmp");
-			BmpImage gradientImage = gradientenfilter(open_bmp(filepath), differenzbild);
-			save_bmp(gradientImage, filepath.split("\\.")[0]+"_gradient_contrast_"+k+".bmp");
+			differenzbild = change_contrast(open_bmp(filepath.split("\\.")[0]+"_mittelwert_differenz.bmp"), k);
+			save_bmp(differenzbild, filepath.split("\\.")[0]+"_mittelwert_differenz_contrast_"+k+".bmp");
+
+		}
+
+		/* Reset */
+		original = open_bmp(filepath);
+		BmpImage gradientImage = gradientenfilter(original, open_bmp(filepath));
+		save_bmp(gradientImage, filepath.split("\\.")[0]+"_gradient.bmp");
+
+		BmpImage gradient_diff = differenzbild(gradientImage, open_bmp(filepath));
+		save_bmp(gradient_diff, filepath.split("\\.")[0]+"_gradient_differenz.bmp");
+
+		for (double k : new double[]{-1.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 4.0, 8.0, 10.0}){
+			gradient_diff = change_contrast(open_bmp(filepath.split("\\.")[0]+"_gradient_differenz.bmp"), k);
+			save_bmp(gradient_diff, filepath.split("\\.")[0]+"_gradient_differenz_contrast_"+k+".bmp");
+
 		}
 
 		BmpImage medianImage = medianfilter(open_bmp(filepath.split("\\.")[0]+"_damaged.bmp"), open_bmp(filepath));

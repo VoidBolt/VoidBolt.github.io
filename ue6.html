@@ -109,8 +109,8 @@ Pixel die außerhalb des Bildes liegen bekommen für die Mittelwertberechnung de
 6.1.c
 
 <code>
-    /* 6 1c */
-	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage, BmpImage outputImage) throws IOException {
+	/* 6 1c */
+	private static BmpImage differenzbild(BmpImage originalImage, BmpImage filteredImage){
 		for (int y = 0; y &lt originalImage.image.getHeight(); y++) {
 			for (int x = 0; x &lt originalImage.image.getWidth(); x++) {
 				int originalValue = originalImage.image.getRgbPixel(x, y).r;
@@ -119,18 +119,20 @@ Pixel die außerhalb des Bildes liegen bekommen für die Mittelwertberechnung de
 				int diff = Math.abs(originalValue - filteredValue);
 
 				PixelColor color = new PixelColor(diff, diff, diff);
-				outputImage.image.setRgbPixel(x, y, color);
+				filteredImage.image.setRgbPixel(x, y, color);
 			}
 		}
-		return outputImage;
-		//save_bmp(difference, outputFileName);
+		return filteredImage;
 	}
 </code>
+
+<img src="./out/Ue6/original_differenz.bmp">
+<img src="./out/Ue6/original2_differenz.bmp">
 
 <br><h3>Aufgabe 2 GradientenFilter mit 3x3 Kernel</h3>
 
 <code>
-    private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) throws IOException {
+    private static BmpImage gradientenfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
 		int height = bmpImageOriginal.image.getHeight();
 		int width = bmpImageOriginal.image.getWidth();
 		int[][] filterkernel = {{0, -2, 0},{-2, 12 ,-2},{0, -2, 0}};
@@ -174,6 +176,41 @@ Pixel die außerhalb des Bildes liegen bekommen für die Mittelwertberechnung de
 
 <img src="./out/Ue6/original_gradient.bmp">
 <img src="./out/Ue6/original2_gradient.bmp">
+    Kuchen:
+    [Oben links -1.0 Kontrast = k -> 1.0]
+    [links 1.5 Kontast = k -> 10.0]
+    <div class="gallery">
+
+        <img src="./out/Ue6/original_gradient_contrast_-1.0.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_0.2.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_0.4.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_1.0.bmp">
+
+        <img src="./out/Ue6/original_gradient_contrast_1.5.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_4.0.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_8.0.bmp">
+        <img src="./out/Ue6/original_gradient_contrast_10.0.bmp">
+
+
+    </div>
+    Tafel:
+    [Oben links -1 Kontrast = k -> 1.0]
+    [links 1.5 Kontast = k -> 10.0]
+    <div class="gallery">
+
+
+        <img src="./out/Ue6/original2_gradient_contrast_-1.0.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_0.2.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_0.4.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_1.0.bmp">
+
+        <img src="./out/Ue6/original2_gradient_contrast_1.5.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_4.0.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_8.0.bmp">
+        <img src="./out/Ue6/original2_gradient_contrast_10.0.bmp">
+
+
+    </div>
 </p>
 </pre>
 </body>
