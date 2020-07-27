@@ -67,22 +67,22 @@
             long numFrames = wavFile.getNumFrames();
             int channels = wavFile.getNumChannels();
             int samples = (int)numFrames*channels;
-    
+
             short upper_bounds = 32767;
             short lower_bounds = -32768;
-    
+
             for (int i = 0; i &lt samples;i++){
                 short sample = wavFile.sound[i];
                 double verstaerkungsFaktor = Math.pow(10, ((double)db/20));
                 double verstaerkung = sample * verstaerkungsFaktor;
-    
+
                 short new_sample = (short)Math.max(lower_bounds, Math.min(upper_bounds, verstaerkung));
-    
+
                 wavFile.sound[i] = new_sample;
             }
             return wavFile;
         }
-    
+
 
     </code>
 

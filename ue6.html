@@ -176,41 +176,140 @@ Pixel die außerhalb des Bildes liegen bekommen für die Mittelwertberechnung de
 
 <img src="./out/Ue6/original_gradient.bmp">
 <img src="./out/Ue6/original2_gradient.bmp">
+
+Es muss durch 4 geteilt werden da der Filter in der Summe 12-(4*2)=4 und somit maximal 255*4 als Reichweite existieren könnte.
+
+Differenzbilder zwischen originalen Bildern, vor und nach dem Gradientfilter oben.
+<img src="./out/Ue6/original_gradient_differenz.bmp">
+<img src="./out/Ue6/original2_gradient_differenz.bmp">
+
+
+Kontrastangepasste Varianten des Differenzbildes:
+
     Kuchen:
     [Oben links -1.0 Kontrast = k -> 1.0]
     [links 1.5 Kontast = k -> 10.0]
     <div class="gallery">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_-1.0.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_0.2.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_0.4.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_1.0.bmp">
 
-        <img src="./out/Ue6/original_gradient_contrast_-1.0.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_0.2.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_0.4.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_1.0.bmp">
-
-        <img src="./out/Ue6/original_gradient_contrast_1.5.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_4.0.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_8.0.bmp">
-        <img src="./out/Ue6/original_gradient_contrast_10.0.bmp">
-
-
+        <img src="./out/Ue6/original_gradient_differenz_contrast_1.5.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_4.0.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_8.0.bmp">
+        <img src="./out/Ue6/original_gradient_differenz_contrast_10.0.bmp">
     </div>
+
     Tafel:
     [Oben links -1 Kontrast = k -> 1.0]
     [links 1.5 Kontast = k -> 10.0]
     <div class="gallery">
 
 
-        <img src="./out/Ue6/original2_gradient_contrast_-1.0.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_0.2.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_0.4.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_1.0.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_-1.0.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_0.2.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_0.4.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_1.0.bmp">
 
-        <img src="./out/Ue6/original2_gradient_contrast_1.5.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_4.0.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_8.0.bmp">
-        <img src="./out/Ue6/original2_gradient_contrast_10.0.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_1.5.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_4.0.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_8.0.bmp">
+        <img src="./out/Ue6/original2_gradient_differenz_contrast_10.0.bmp">
 
 
     </div>
+    Die Bilder werden schärfer und haben haben mehr Kontrast.
+
+
+<br><h3>Aufgabe 3 MedianFilter</h3>
+
+<code>
+        private static boolean pixelInRange(int x, int y, int width, int height) {
+            return (x >= 0 && y >= 0 && x &lt width && y &lt height);
+        }
+        private static int average(int[] arr){
+            int sum = 0;
+            for(int i = 0; i &lt arr.length; i++) {
+                sum += arr[i];
+            }
+            return (sum/arr.length);
+        }
+        private static int average(int[][] kernel) {
+            double sum = 0;
+            for(int x = 0; x &lt kernel.length; x++) { // x
+                for(int y = 0; y &lt kernel.length; y++) { // y
+                    sum += kernel[x][y];
+                }
+            }
+            int avg = (int) Math.round(sum/(kernel.length*kernel.length));
+            return avg;
+        }
+
+        private static int[][] buildkernel(BmpImage image, int y, int x) {
+            int height = image.image.getHeight();
+            int width = image.image.getWidth();
+            int[][] pixelkernel = new int[3][3];
+
+            // Build Kernel for pixel
+            for(int i = 0; i &lt 3; i++) { // x
+                for(int j = 0; j &lt 3; j++) { // y
+                    int xKernel = x + (j-1);
+                    int yKernel = y + (i-1);
+
+                    if (pixelInRange(xKernel, yKernel, width, height)) {
+                        pixelkernel[i][j] = image.image.getRgbPixel(xKernel, yKernel).r;
+                    } else {
+                        pixelkernel[i][j] = 0;
+                    }
+                }
+            }
+		    return pixelkernel;
+	    }
+
+    	private static BmpImage medianfilter(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
+		int height = bmpImageOriginal.image.getHeight();
+		int width = bmpImageOriginal.image.getWidth();
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y &lt height; y++) {
+			for (int x = 0; x &lt width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+
+				int[] pixelvalues = new int[3*3];
+				for (int j = 0; j &lt 3; j++){
+					for (int i = 0; i &lt 3; i++){
+						int index = j*3 + i;
+						pixelvalues[index] = pixelkernel[i][j];
+					}
+				}
+
+				int median = average(pixelvalues);
+
+				PixelColor color = new PixelColor(median, median, median);
+				bmpImageFiltered.image.setRgbPixel(x, y, color);
+			}
+		}
+		return bmpImageFiltered;
+	}
+</code>
+Fehlerbildvarianten:
+<img src="./out/Ue6/original_damaged.bmp">
+<img src="./out/Ue6/original2_damaged.bmp">
+
+Reparierte Variante (Nach einer anwendung):
+<img src="./out/Ue6/original_median.bmp">
+<img src="./out/Ue6/original2_median.bmp">
+
+Der Effekt des Medianfilter ist hier gut ersichtlich, wo vorher nur 4 pixel betroffen waren wurde die farbe nun auf alle umliegenden pixel verbreitet und der farbe angepasst.
+Um solch drastische Fehler zu beheben erfordert es jedoch mehrere anwendungen des Filters. Zudem machen wir das ja nicht nur an den Fehlerstellen und reduzieren somit aufjedenfall
+die detailreiche bei jeder anwendung des Filters. Für optimale Reperatur ohne Verlust jeglicher anderen Details sollte man diesen Kernel wohl am besten nur an identifizierten PixelFehlern
+ausführen.
+<img src="./out/Ue6/Before_Median_Kernel.bmp">
+<img src="./out/Ue6/After_Median_Kernel.bmp">
+
+
 </p>
 </pre>
 </body>
