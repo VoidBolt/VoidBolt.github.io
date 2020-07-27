@@ -6,15 +6,15 @@ import java.util.HashMap;
 
 public final class bmp_io {
 	/* 6 4 */
-	private static BmpImage sobelfilterX(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered){
-		int height = bmpImageOriginal.image.getHeight();
-		int width = bmpImageOriginal.image.getWidth();
+	private static BmpImage sobelfilterX(BmpImage original, BmpImage copy){
+		int height = original.image.getHeight();
+		int width = original.image.getWidth();
 
 		// Iterate over every pixel in picture
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				// Kernel[x][y]
-				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+				int[][] pixelkernel = buildkernel(original, y, x);
 				int[][] filterkernel = {{1, 2, 1},{0, 0 ,0},{-1, -2, -1}};
 
 				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
@@ -24,23 +24,23 @@ public final class bmp_io {
 				else if (sum > 255) sum = 255;
 
 				PixelColor color = new PixelColor(sum, sum, sum);
-				bmpImageFiltered.image.setRgbPixel(x, y, color);
+				copy.image.setRgbPixel(x, y, color);
 			}
 		}
-		return bmpImageFiltered;
+		return copy;
 	}
 
-	private static BmpImage sobelfilterY(BmpImage bmpImageOriginal, BmpImage bmpImageFiltered) {
+	private static BmpImage sobelfilterY(BmpImage original, BmpImage copy) {
 
-		int height = bmpImageOriginal.image.getHeight();
-		int width = bmpImageOriginal.image.getWidth();
+		int height = original.image.getHeight();
+		int width = original.image.getWidth();
 		int[][] filterkernel = {{1, 0, -1},{2, 0 ,-2},{1, 0, -1}};
 
 		// Iterate over every pixel in picture
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				// Kernel[x][y]
-				int[][] pixelkernel = buildkernel(bmpImageOriginal, y, x);
+				int[][] pixelkernel = buildkernel(original, y, x);
 
 				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
 				int sum = sumOfAllMatrixValues(pixelkernel);
@@ -49,10 +49,10 @@ public final class bmp_io {
 				else if (sum > 255) sum = 255;
 
 				PixelColor color = new PixelColor(sum, sum, sum);
-				bmpImageFiltered.image.setRgbPixel(x, y, color);
+				copy.image.setRgbPixel(x, y, color);
 			}
 		}
-		return bmpImageFiltered;
+		return copy;
 	}
 
 	/* 6 3 */

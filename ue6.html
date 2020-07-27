@@ -310,6 +310,69 @@ ausführen.
 <img src="./out/Ue6/After_Median_Kernel.bmp">
 
 
+
+<br><h3>Aufgabe 4 SobelFilter</h3>
+
+<code>
+    private static BmpImage sobelfilterX(BmpImage original, BmpImage copy){
+		int height = original.image.getHeight();
+		int width = original.image.getWidth();
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y &lt height; y++) {
+			for (int x = 0; x &lt width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(original, y, x);
+				int[][] filterkernel = {{1, 2, 1},{0, 0 ,0},{-1, -2, -1}};
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel);
+
+				if(sum &lt 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				copy.image.setRgbPixel(x, y, color);
+			}
+		}
+		return copy;
+	}
+
+	private static BmpImage sobelfilterY(BmpImage original, BmpImage copy) {
+
+		int height = original.image.getHeight();
+		int width = original.image.getWidth();
+		int[][] filterkernel = {{1, 0, -1},{2, 0 ,-2},{1, 0, -1}};
+
+		// Iterate over every pixel in picture
+		for (int y = 0; y &lt height; y++) {
+			for (int x = 0; x &lt width; x++) {
+				// Kernel[x][y]
+				int[][] pixelkernel = buildkernel(original, y, x);
+
+				pixelkernel = matrizenmultiplikation(pixelkernel, filterkernel);
+				int sum = sumOfAllMatrixValues(pixelkernel);
+
+				if(sum &lt 0) sum = 0;
+				else if (sum > 255) sum = 255;
+
+				PixelColor color = new PixelColor(sum, sum, sum);
+				copy.image.setRgbPixel(x, y, color);
+			}
+		}
+		return copy;
+	}
+</code>
+
+SobelX:
+<img src="./out/Ue6/original_sobelX.bmp">
+SobelY:
+<img src="./out/Ue6/original_sobelY.bmp">
+
+SobelX:
+<img src="./out/Ue6/original2_sobelX.bmp">
+SobelY:
+<img src="./out/Ue6/original2_sobelY.bmp">
 </p>
 </pre>
 </body>
